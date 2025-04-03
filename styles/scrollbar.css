@@ -1,0 +1,26 @@
+
+/* تخصيص شريط التمرير في Chrome و Safari */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* تخصيص شريط التمرير في Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* تخصيص شريط التمرير في Internet Explorer و Edge */
+* {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}

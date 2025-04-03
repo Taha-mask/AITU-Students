@@ -1,0 +1,245 @@
+<div class="app-layout" [dir]="(translationService.currentLang$ | async) === 'ar' ? 'rtl' : 'ltr'">
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="isSidebarOpen">
+    <div class="logo-container">
+      <i class="bi bi-mortarboard-fill"></i>
+      <h1>{{ translationService.translate('dashboard') }}</h1>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/home" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span>{{ translationService.translate('dashboard') }}</span>
+      </a>
+      <a routerLink="/students-distribution" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-people-fill"></i>
+        <span>{{ translationService.translate('students_distribution') }}</span>
+      </a>
+      <a routerLink="/analytics" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-bar-chart-fill"></i>
+        <span>{{ translationService.translate('analytics') }}</span>
+      </a>
+      <a routerLink="/settings" routerLinkActive="active" class="nav-link">
+        <i class="bi bi-gear-fill"></i>
+        <span>{{ translationService.translate('settings') }}</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-area">
+    <!-- Navbar -->
+    <app-navbar></app-navbar>
+
+    <!-- Mobile Sidebar Toggle -->
+  
+
+    <div class="content-container">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="search-container">
+          <i class="bi bi-search"></i>
+          <input type="text" [(ngModel)]="searchTerm" (input)="updateSearchTerm($event)" placeholder="{{ translationService.translate('student') }}">
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn btn-outline-primary" (click)="toggleFilters()">
+            <i class="bi bi-funnel"></i> {{ translationService.translate('filters') }}
+          </button>
+          <button class="btn btn-outline-primary" (click)="exportData()">
+            <i class="bi bi-download"></i> {{ translationService.translate('export') }}
+          </button>
+          <button class="btn btn-primary" (click)="addStudent()">
+            <i class="bi bi-plus-lg"></i> {{ translationService.translate('add_student') }}
+          </button>
+        </div>
+      </header>
+
+      <!-- Quick Stats -->
+      <div class="quick-stats">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="stat-info">
+            <h4>{{ translationService.translate('total_students') }}</h4>
+            <h2>{{totalStudents}}</h2>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-building"></i>
+          </div>
+          <div class="stat-info">
+            <h4>{{ translationService.translate('departments') }}</h4>
+            <h2>{{departments.length}}</h2>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h4>{{ translationService.translate('active') }}</h4>
+            <h2>{{totalStudents}}</h2>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-graph-up"></i>
+          </div>
+          <div class="stat-info">
+            <h4>{{ translationService.translate('growth') }}</h4>
+            <h2>+12%</h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Panel (Collapsible) -->
+      <div class="filters-panel" [class.show]="showFilters">
+        <div class="filters-content">
+          <div class="filter-section">
+            <h5>{{ translationService.translate('department') }}</h5>
+            <div class="filter-chips">
+              <div class="chip" [class.active]="selectedDepartment === ''" (click)="filterByDepartment('')">{{ translationService.translate('all') }}</div>
+              <div class="chip" *ngFor="let dept of departments" 
+                   [class.active]="selectedDepartment === dept"
+                   (click)="filterByDepartment(dept)">
+                {{dept}}
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('factory') }}</h5>
+            <div class="filter-chips">
+              <div class="chip" [class.active]="selectedFactory === ''" (click)="filterByFactory('')">{{ translationService.translate('all') }}</div>
+              <div class="chip" *ngFor="let factory of factories"
+                   [class.active]="selectedFactory === factory"
+                   (click)="filterByFactory(factory)">
+                {{factory}}
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('group') }}</h5>
+            <div class="filter-chips">
+              <div class="chip" [class.active]="selectedGroup === ''" (click)="filterByGroup('')">{{ translationService.translate('all') }}</div>
+              <div class="chip" *ngFor="let group of groups"
+                   [class.active]="selectedGroup === group"
+                   (click)="filterByGroup(group)">
+                {{group}}
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('stage') }}</h5>
+            <div class="filter-chips">
+              <div class="chip" [class.active]="selectedStage === ''" (click)="filterByStage('')">{{ translationService.translate('all') }}</div>
+              <div class="chip" *ngFor="let stage of stages"
+                   [class.active]="selectedStage === stage"
+                   (click)="filterByStage(stage)">
+                {{stage}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Section -->
+      <div class="analytics-section">
+        <div class="chart-container">
+          <h4>{{ translationService.translate('department_distribution') }}</h4>
+          <div class="chart-wrapper">
+            <div *ngFor="let stat of departmentStats" class="chart-bar">
+              <div class="bar-label">{{stat.name}}</div>
+              <div class="bar-container">
+                <div class="bar" [style.width.%]="stat.percentage">
+                  <span class="bar-value">{{stat.count}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Table -->
+      <div class="table-container">
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>
+                <input type="checkbox" (change)="toggleAll($event)">
+              </th>
+              <th>{{ translationService.translate('student') }}</th>
+              <th>{{ translationService.translate('department') }}</th>
+              <th>{{ translationService.translate('factory') }}</th>
+              <th>{{ translationService.translate('group') }}</th>
+              <th>{{ translationService.translate('stage') }}</th>
+              <th>{{ translationService.translate('date') }}</th>
+              <th>{{ translationService.translate('actions') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of filteredStudents | slice: (currentPage-1) * itemsPerPage : currentPage * itemsPerPage">
+              <td>
+                <input type="checkbox" [(ngModel)]="student.selected">
+              </td>
+              <td>
+                <div class="student-info">
+                  <div class="student-avatar">{{student.student.charAt(0)}}</div>
+                  <span>{{student.student}}</span>
+                </div>
+              </td>
+              <td>{{student.department}}</td>
+              <td>{{student.factory}}</td>
+              <td>{{student.group}}</td>
+              <td>{{student.stage}}</td>
+              <td>{{student.date}}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-icon" (click)="editStudent(student)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn-icon delete" (click)="deleteStudent(student)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <div class="items-per-page">
+            <select [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+              <option [value]="5">{{ translationService.translate('per_page_5') }}</option>
+              <option [value]="10">{{ translationService.translate('per_page_10') }}</option>
+              <option [value]="20">{{ translationService.translate('per_page_20') }}</option>
+            </select>
+          </div>
+          
+          <div class="pagination-info">
+            {{ translationService.translate('showing') }} {{(currentPage - 1) * itemsPerPage + 1}} {{ translationService.translate('to') }} {{Math.min(currentPage * itemsPerPage, filteredStudents.length)}} {{ translationService.translate('of') }} {{filteredStudents.length}} {{ translationService.translate('entries') }}
+          </div>
+
+          <div class="pagination-controls">
+            <button class="btn-page" [disabled]="currentPage === 1" (click)="currentPage = currentPage - 1">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <span class="page-number">{{currentPage}}</span>
+            <button class="btn-page" [disabled]="currentPage >= totalPages" (click)="currentPage = currentPage + 1">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
