@@ -4,7 +4,7 @@
  
 
     <!-- Right Side Icons -->
-    <div class="nav-icons">
+    <div class="nav-icons" [ngClass]="{'rtl-icon-order': (translationService.currentLang$ | async) === 'ar'}">
       <!-- Language Switcher -->
       <app-language-switcher></app-language-switcher>
 
@@ -39,13 +39,13 @@
       </div>
 
       <!-- User Profile -->
-      <div class="user-profile" (click)="toggleUserMenu()">
-        <div class="user-info" *ngFor="let adm of admin">
+      <div class="user-profile" *ngFor="let adm of admin" (click)="toggleUserMenu()">
+        <div class="user-info" >
           <div class="user-name">{{adm.name}}</div>
           <div class="user-role">{{adm.types[0]}}</div>
         </div>
         <div class="avatar-container">
-          <img src="assets/images/user-1.png" alt="User Avatar" class="avatar">
+          <img [src]="adm.image" alt="User Avatar" class="avatar">
         </div>
 
         <!-- User Menu Dropdown -->

@@ -34,10 +34,13 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-left: auto; /* Default: push to right for LTR (English) */
 }
 
 [dir="rtl"] .nav-icons {
   flex-direction: row-reverse;
+  margin-left: 0; /* Reset left margin for RTL */
+  margin-right: auto; /* Push to left for RTL (Arabic) */
 }
 
 .icon-btn {
@@ -248,6 +251,40 @@
 /* RTL specific adjustments */
 [dir="rtl"] .dropdown-item {
   flex-direction: row-reverse;
+}
+
+.rtl-layout {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+.ltr-layout {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.rtl-icon-order {
+  flex-direction: row-reverse;
+}
+
+.rtl-icon-order > * {
+  order: reverse;
+}
+
+.rtl-icon-order > *:first-child {
+  order: 4;
+}
+
+.rtl-icon-order > *:nth-child(2) {
+  order: 3;
+}
+
+.rtl-icon-order > *:nth-child(3) {
+  order: 2;
+}
+
+.rtl-icon-order > *:last-child {
+  order: 1;
 }
 
 /* Responsive design */

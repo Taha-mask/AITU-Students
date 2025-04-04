@@ -9,6 +9,6 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
-    { provide: APP_BASE_HREF, useValue: '/Markting_Web/' } // تحديد baseHref
+    { provide: APP_BASE_HREF, useValue: '/AITU-Students/' } // تحديد baseHref
   ]
 }).catch(err => console.error(err));

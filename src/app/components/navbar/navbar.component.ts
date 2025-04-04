@@ -20,8 +20,9 @@ export class NavbarComponent {
   constructor(public translationService: TranslationService) {}
 
   admin = [{
-    name: 'John Doe',
-    types: ['Administrator']
+    image: 'images/user-1.png',
+    name: 'Ahmed Saad',
+    types: ['Admin', 'Administrative', 'Technical']
   }];
 
   notifications = [
