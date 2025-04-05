@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-type TranslationKeys = keyof typeof translations.en;
-type Translations = typeof translations;
-
 const translations = {
   en: {
     // Navigation
@@ -33,8 +30,10 @@ const translations = {
     date: 'Date',
     actions: 'Actions',
     
-    // Filters
+    // Filters and Sorting
     filters: 'Filters',
+    sort: 'Sort',
+    sort_by: 'Sort by',
     all: 'All',
     
     // Actions
@@ -88,8 +87,10 @@ const translations = {
     date: 'التاريخ',
     actions: 'الإجراءات',
     
-    // Filters
+    // Filters and Sorting
     filters: 'التصفية',
+    sort: 'ترتيب',
+    sort_by: 'ترتيب حسب',
     all: 'الكل',
     
     // Actions
@@ -116,6 +117,8 @@ const translations = {
     back_to_home: 'العودة للرئيسية',
   }
 } as const;
+
+type TranslationKeys = keyof typeof translations.en;
 
 @Injectable({
   providedIn: 'root'

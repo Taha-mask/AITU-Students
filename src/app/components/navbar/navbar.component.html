@@ -1,7 +1,7 @@
 <nav class="navbar justify-content-between align-items-center" [dir]="(translationService.currentLang$ | async) === 'ar' ? 'rtl' : 'ltr'">
   <div class="nav-content">
     <!-- Welcome Message -->
- 
+
 
     <!-- Right Side Icons -->
     <div class="nav-icons" [ngClass]="{'rtl-icon-order': (translationService.currentLang$ | async) === 'ar'}">
@@ -27,6 +27,20 @@
               <div class="notification-content">
                 <p class="notification-text">{{notification.message}}</p>
                 <span class="notification-time">{{notification.time}}</span>
+                <div class="factory-actions" *ngIf="notification.type === 'factory_request'">
+                  <div class="factory-details">
+                    <p><i class="bi bi-person-circle"></i> Student: {{notification.studentName}}</p>
+                    <p><i class="bi bi-building"></i> Factory: {{notification.factoryName}}</p>
+                  </div>
+                  <div class="action-buttons">
+                    <button class="btn-accept" (click)="notification.id && handleFactoryRequest(notification.id, 'accept')">
+                      <i class="bi bi-check-circle"></i> Accept
+                    </button>
+                    <button class="btn-deny" (click)="notification.id && handleFactoryRequest(notification.id, 'deny')">
+                      <i class="bi bi-x-circle"></i> Deny
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -61,7 +75,7 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="logout()">
             <i class="bi bi-box-arrow-right"></i>
-            <span>{{ translationService.translate('logout') }}</span>
+            <span>{{ translationService.translate('logout')  }}</span>
           </a>
         </div>
       </div>

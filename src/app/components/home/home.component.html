@@ -1,9 +1,8 @@
 <div class="app-layout" [dir]="(translationService.currentLang$ | async) === 'ar' ? 'rtl' : 'ltr'">
   <!-- Sidebar -->
   <aside class="sidebar" [class.open]="isSidebarOpen">
-    <div class="logo-container">
-      <i class="bi bi-mortarboard-fill"></i>
-      <h1>{{ translationService.translate('dashboard') }}</h1>
+    <div class="logo-container mb-5">
+      <img src="images/download.png" alt="Logo" class="logo img-fluid">
     </div>
 
     <nav class="nav-menu">
@@ -43,9 +42,14 @@
         </div>
         
         <div class="header-actions">
-          <button class="btn btn-outline-primary" (click)="toggleFilters()">
-            <i class="bi bi-funnel"></i> {{ translationService.translate('filters') }}
-          </button>
+          <div class="btn-group">
+            <button class="btn btn-outline-primary" (click)="toggleFilters()">
+              <i class="bi bi-funnel"></i> {{ translationService.translate('filters') }}
+            </button>
+            <button class="btn btn-outline-primary" (click)="toggleSort()">
+              <i class="bi bi-sort-down"></i> {{ translationService.translate('sort') }}
+            </button>
+          </div>
           <button class="btn btn-outline-primary" (click)="exportData()">
             <i class="bi bi-download"></i> {{ translationService.translate('export') }}
           </button>
@@ -98,55 +102,56 @@
         </div>
       </div>
 
+      <!-- Sort Panel (Collapsible) -->
+      <div class="sort-panel" [class.show]="showSort">
+        <div class="sort-content">
+          <div class="sort-options">
+            <h5>{{ translationService.translate('sort_by') }}</h5>
+            <div class="sort-chips">
+              <div class="chip" 
+                   *ngFor="let option of sortOptions"
+                   [class.active]="selectedSort === option.value"
+                   (click)="applySorting(option.value)">
+                {{option.label}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Filters Panel (Collapsible) -->
       <div class="filters-panel" [class.show]="showFilters">
         <div class="filters-content">
           <div class="filter-section">
             <h5>{{ translationService.translate('department') }}</h5>
-            <div class="filter-chips">
-              <div class="chip" [class.active]="selectedDepartment === ''" (click)="filterByDepartment('')">{{ translationService.translate('all') }}</div>
-              <div class="chip" *ngFor="let dept of departments" 
-                   [class.active]="selectedDepartment === dept"
-                   (click)="filterByDepartment(dept)">
-                {{dept}}
-              </div>
-            </div>
+            <select class="form-select" [(ngModel)]="selectedDepartment" (change)="filterByDepartment(selectedDepartment)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
+            </select>
           </div>
 
           <div class="filter-section">
             <h5>{{ translationService.translate('factory') }}</h5>
-            <div class="filter-chips">
-              <div class="chip" [class.active]="selectedFactory === ''" (click)="filterByFactory('')">{{ translationService.translate('all') }}</div>
-              <div class="chip" *ngFor="let factory of factories"
-                   [class.active]="selectedFactory === factory"
-                   (click)="filterByFactory(factory)">
-                {{factory}}
-              </div>
-            </div>
+            <select class="form-select" [(ngModel)]="selectedFactory" (change)="filterByFactory(selectedFactory)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let factory of factories" [value]="factory">{{factory}}</option>
+            </select>
           </div>
 
           <div class="filter-section">
             <h5>{{ translationService.translate('group') }}</h5>
-            <div class="filter-chips">
-              <div class="chip" [class.active]="selectedGroup === ''" (click)="filterByGroup('')">{{ translationService.translate('all') }}</div>
-              <div class="chip" *ngFor="let group of groups"
-                   [class.active]="selectedGroup === group"
-                   (click)="filterByGroup(group)">
-                {{group}}
-              </div>
-            </div>
+            <select class="form-select" [(ngModel)]="selectedGroup" (change)="filterByGroup(selectedGroup)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let group of groups" [value]="group">{{group}}</option>
+            </select>
           </div>
 
           <div class="filter-section">
             <h5>{{ translationService.translate('stage') }}</h5>
-            <div class="filter-chips">
-              <div class="chip" [class.active]="selectedStage === ''" (click)="filterByStage('')">{{ translationService.translate('all') }}</div>
-              <div class="chip" *ngFor="let stage of stages"
-                   [class.active]="selectedStage === stage"
-                   (click)="filterByStage(stage)">
-                {{stage}}
-              </div>
-            </div>
+            <select class="form-select" [(ngModel)]="selectedStage" (change)="filterByStage(selectedStage)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
+            </select>
           </div>
         </div>
       </div>

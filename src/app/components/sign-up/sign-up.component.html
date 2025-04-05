@@ -1,0 +1,75 @@
+<div class="signup-container">
+  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
+    <h2>Sign Up</h2>
+    
+    <div class="form-group">
+      <input type="text" formControlName="firstName" placeholder="First Name" required>
+      <div class="error-message" *ngIf="f['firstName'].touched && f['firstName'].invalid">
+        {{ getErrorMessage('firstName') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="text" formControlName="lastName" placeholder="Last Name" required>
+      <div class="error-message" *ngIf="f['lastName'].touched && f['lastName'].invalid">
+        {{ getErrorMessage('lastName') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="email" formControlName="email" placeholder="Email" required>
+      <div class="error-message" *ngIf="f['email'].touched && f['email'].invalid">
+        {{ getErrorMessage('email') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="tel" formControlName="phone" placeholder="Phone Number (11 digits)" required>
+      <div class="error-message" *ngIf="f['phone'].touched && f['phone'].invalid">
+        {{ getErrorMessage('phone') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="password" formControlName="password" placeholder="Password" required>
+      <div class="error-message" *ngIf="f['password'].touched && f['password'].invalid">
+        {{ getErrorMessage('password') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
+      <div class="error-message" *ngIf="f['confirmPassword'].touched && (f['confirmPassword'].invalid || signupForm.hasError('mismatch'))">
+        {{ getErrorMessage('confirmPassword') }}
+      </div>
+    </div>
+
+    <div class="form-group role-select">
+      <label>Select Role:</label>
+      <div class="role-options">
+        <div class="role-option">
+          <input type="radio" formControlName="role" value="administrative" id="administrative">
+          <label for="administrative">Administrative Supervisor</label>
+        </div>
+        <div class="role-option">
+          <input type="radio" formControlName="role" value="technical" id="technical">
+          <label for="technical">Technical Supervisor</label>
+        </div>
+      </div>
+      <div class="error-message" *ngIf="f['role'].touched && f['role'].invalid">
+        {{ getErrorMessage('role') }}
+      </div>
+    </div>
+
+    <button type="submit" class="btn-signup btn-primary" [disabled]="signupForm.invalid || loading">
+      {{ loading ? 'Signing up...' : 'Sign Up' }}
+    </button>
+
+    <div class="error-message text-center" *ngIf="error">{{ error }}</div>
+
+    <p class="login-link">
+      Already have an account? 
+      <a href="javascript:void(0)" (click)="goToLogin()">Login</a>
+    </p>
+  </form>
+</div>

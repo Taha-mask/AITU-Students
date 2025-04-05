@@ -5,6 +5,7 @@ import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TranslationService } from '../../services/translation.service';
+import { EditStudentModalComponent } from './edit-student-modal/edit-student-modal.component';
 
 interface Student {
   id: number;
@@ -52,157 +53,111 @@ export class HomeComponent {
   selectedFactory: string = '';
   selectedGroup: string = '';
   selectedStage: string = '';
-  itemsPerPage: number = 5;
-  currentPage: number = 1;
   showFilters: boolean = false;
-
-  // Statistics properties
-  departmentStats: { name: string; count: number; percentage: number }[] = [];
-  factoryStats: { name: string; count: number; percentage: number }[] = [];
-  groupStats: { name: string; count: number; percentage: number }[] = [];
-  stageStats: { name: string; count: number; percentage: number }[] = [];
+  showSort: boolean = false;
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
   totalStudents: number = 0;
+  sortOptions = [
+    { value: 'name_asc', label: 'Name (A-Z)' },
+    { value: 'name_desc', label: 'Name (Z-A)' },
+    { value: 'date_new', label: 'Newest First' },
+    { value: 'date_old', label: 'Oldest First' }
+  ];
+  selectedSort: string = '';
 
-  constructor(private dialog: MatDialog, public translationService: TranslationService) {
-    this.calculateStatistics();
+  constructor(
+    public translationService: TranslationService,
+    private dialog: MatDialog
+  ) {
+    this.totalStudents = this.students.length;
   }
 
   get totalPages(): number {
     return Math.ceil(this.filteredStudents.length / this.itemsPerPage);
   }
 
-  get selectedCount(): number {
-    return this.students.filter(student => student.selected).length;
-  }
-
-  toggleFilters(): void {
-    this.showFilters = !this.showFilters;
-  }
-
-  exportData(): void {
-    const data = this.filteredStudents.map(({ id, selected, ...rest }) => rest);
-    const csv = this.convertToCSV(data);
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'students.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
-  private convertToCSV(data: any[]): string {
-    const headers = Object.keys(data[0]);
-    const rows = data.map(obj => headers.map(header => obj[header]));
-    return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
-  }
-
-  calculateStatistics(): void {
-    this.totalStudents = this.students.length;
-
-    // Calculate department statistics
-    this.departmentStats = this.departments.map(dept => {
-      const count = this.students.filter(s => s.department === dept).length;
-      return {
-        name: dept,
-        count: count,
-        percentage: (count / this.totalStudents) * 100
-      };
+  editStudent(student: Student) {
+    const dialogRef = this.dialog.open(EditStudentModalComponent, {
+      width: '500px',
+      data: { student, isEdit: true }
     });
 
-    // Calculate factory statistics
-    this.factoryStats = this.factories.map(factory => {
-      const count = this.students.filter(s => s.factory === factory).length;
-      return {
-        name: factory,
-        count: count,
-        percentage: (count / this.totalStudents) * 100
-      };
-    });
-
-    // Calculate group statistics
-    this.groupStats = this.groups.map(group => {
-      const count = this.students.filter(s => s.group === group).length;
-      return {
-        name: group,
-        count: count,
-        percentage: (count / this.totalStudents) * 100
-      };
-    });
-
-    // Calculate stage statistics
-    this.stageStats = this.stages.map(stage => {
-      const count = this.students.filter(s => s.stage === stage).length;
-      return {
-        name: stage,
-        count: count,
-        percentage: (count / this.totalStudents) * 100
-      };
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Update the student in the array
+        const index = this.students.findIndex(s => s.id === result.id);
+        if (index !== -1) {
+          this.students[index] = result;
+          this.filteredStudents = [...this.students]; // Update filtered list
+          this.applyFilters(); // Reapply any active filters
+        }
+      }
     });
   }
 
-  addStudent(): void {
-    const newId = Math.max(...this.students.map(s => s.id)) + 1;
-    const newStudent: Student = {
-      id: newId,
-      student: 'New Student',
-      department: this.departments[0],
-      factory: this.factories[0],
-      group: this.groups[0],
-      stage: this.stages[0],
-      date: new Date().toLocaleDateString(),
-      selected: false
-    };
-    this.students.unshift(newStudent);
-    this.calculateStatistics();
+  addStudent() {
+    const dialogRef = this.dialog.open(EditStudentModalComponent, {
+      width: '500px',
+      data: { isEdit: false }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Generate new ID
+        const maxId = Math.max(...this.students.map(s => s.id), 0);
+        result.id = maxId + 1;
+        
+        // Add the new student
+        this.students.unshift(result);
+        this.filteredStudents = [...this.students];
+        this.totalStudents = this.students.length;
+        this.applyFilters();
+      }
+    });
+  }
+
+  toggleAll(event: any) {
+    const checked = event.target.checked;
+    this.filteredStudents.forEach(student => student.selected = checked);
+  }
+
+  updateSearchTerm(event: any) {
+    this.searchTerm = event.target.value;
     this.applyFilters();
   }
 
-  deleteStudent(student: Student): void {
-    if (confirm('Are you sure you want to delete this student?')) {
-      this.students = this.students.filter(s => s.id !== student.id);
-      this.calculateStatistics();
-      this.applyFilters();
-    }
+  toggleFilters() {
+    this.showFilters = !this.showFilters;
   }
 
-  deleteSelectedStudents(): void {
-    if (confirm('Are you sure you want to delete selected students?')) {
-      this.students = this.students.filter(student => !student.selected);
-      this.calculateStatistics();
-      this.applyFilters();
-    }
+  toggleSort() {
+    this.showSort = !this.showSort;
   }
 
-  editStudent(student: Student): void {
-    // Implement edit functionality
-    console.log('Editing student:', student);
+  filterByDepartment(department: string) {
+    this.selectedDepartment = department;
+    this.applyFilters();
   }
 
-  sortStudents(event: Event): void {
-    const value = (event.target as HTMLSelectElement).value;
-    const sortFunction = (a: Student, b: Student) => {
-      switch (value) {
-        case 'Name':
-          return a.student.localeCompare(b.student);
-        case 'Newest':
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        case 'Oldest':
-          return new Date(a.date).getTime() - new Date(b.date).getTime();
-        default:
-          return 0;
-      }
-    };
-    this.filteredStudents.sort(sortFunction);
+  filterByFactory(factory: string) {
+    this.selectedFactory = factory;
+    this.applyFilters();
   }
 
-  applyFilters(): void {
+  filterByGroup(group: string) {
+    this.selectedGroup = group;
+    this.applyFilters();
+  }
+
+  filterByStage(stage: string) {
+    this.selectedStage = stage;
+    this.applyFilters();
+  }
+
+  applyFilters() {
     this.filteredStudents = this.students.filter(student => {
-      const matchesSearch = this.searchTerm === '' || 
-        Object.values(student).some(value => 
-          value.toString().toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
-      
+      const matchesSearch = student.student.toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchesDepartment = !this.selectedDepartment || student.department === this.selectedDepartment;
       const matchesFactory = !this.selectedFactory || student.factory === this.selectedFactory;
       const matchesGroup = !this.selectedGroup || student.group === this.selectedGroup;
@@ -210,49 +165,51 @@ export class HomeComponent {
 
       return matchesSearch && matchesDepartment && matchesFactory && matchesGroup && matchesStage;
     });
-    this.currentPage = 1;
+    this.currentPage = 1; // Reset to first page when filters change
   }
 
-  updateSearchTerm(event: any): void {
-    this.searchTerm = event.target.value;
-    this.applyFilters();
+  applySorting(sortValue: string) {
+    this.selectedSort = sortValue;
+    
+    switch (sortValue) {
+      case 'name_asc':
+        this.filteredStudents.sort((a, b) => a.student.localeCompare(b.student));
+        break;
+      case 'name_desc':
+        this.filteredStudents.sort((a, b) => b.student.localeCompare(a.student));
+        break;
+      case 'date_new':
+        this.filteredStudents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        break;
+      case 'date_old':
+        this.filteredStudents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        break;
+    }
   }
 
-  filterByDepartment(department: string): void {
-    this.selectedDepartment = department;
-    this.applyFilters();
+  deleteStudent(student: Student) {
+    const index = this.students.findIndex(s => s.id === student.id);
+    if (index !== -1) {
+      this.students.splice(index, 1);
+      this.filteredStudents = [...this.students];
+      this.totalStudents = this.students.length;
+      this.applyFilters();
+    }
   }
 
-  filterByFactory(factory: string): void {
-    this.selectedFactory = factory;
-    this.applyFilters();
+  exportData() {
+    // Implement export logic
   }
 
-  filterByGroup(group: string): void {
-    this.selectedGroup = group;
-    this.applyFilters();
-  }
-
-  filterByStage(stage: string): void {
-    this.selectedStage = stage;
-    this.applyFilters();
-  }
-
-  clearFilters(): void {
-    this.searchTerm = '';
-    this.selectedDepartment = '';
-    this.selectedFactory = '';
-    this.selectedGroup = '';
-    this.selectedStage = '';
-    this.applyFilters();
-  }
-
-  toggleAll(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.filteredStudents.forEach(student => student.selected = checked);
-  }
-
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+  get departmentStats() {
+    const stats = this.departments.map(dept => {
+      const count = this.students.filter(s => s.department === dept).length;
+      return {
+        name: dept,
+        count,
+        percentage: (count / this.students.length) * 100
+      };
+    });
+    return stats;
   }
 }
