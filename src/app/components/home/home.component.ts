@@ -198,7 +198,34 @@ export class HomeComponent {
   }
 
   exportData() {
-    // Implement export logic
+    // Convert filtered students to CSV
+    const headers = ['ID', 'Student', 'Department', 'Factory', 'Group', 'Stage', 'Date'];
+    const csvData = this.filteredStudents.map(student => [
+      student.id,
+      student.student,
+      student.department,
+      student.factory,
+      student.group,
+      student.stage,
+      student.date
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Create a Blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'students_export.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   get departmentStats() {
