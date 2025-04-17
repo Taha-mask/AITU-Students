@@ -163,29 +163,6 @@ select {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Drag and Drop Styles */
-.cdk-drag-preview {
-  box-sizing: border-box;
-  border-radius: 8px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  background-color: white;
-  padding: 1rem;
-}
-
-.cdk-drag-preview .checkbox-wrapper {
-  display: none;
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
 /* Factories */
 .factories-container {
   background: white;
@@ -243,6 +220,14 @@ select {
   border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.factory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #86A8E7;
 }
 
 .factory-header {
@@ -332,34 +317,43 @@ select {
   animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Modal Styles */
+.modal-body .form-label {
+  font-weight: 600;
+  color: #495057;
 }
 
-.remove-btn {
-  background: none;
-  border: none;
-  color: #dc3545;
-  cursor: pointer;
-  padding: 0.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+.modal-body p {
+  margin-bottom: 0;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 4px;
 }
 
-.remove-btn:hover {
-  color: #bd2130;
-  transform: scale(1.1);
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  background-color: white;
+  padding: 1rem;
 }
 
+.cdk-drag-preview .checkbox-wrapper {
+  display: none;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Back Button */
 .back-button {
   margin-bottom: 1rem;
 }
@@ -395,6 +389,18 @@ select {
   transform: rotate(180deg);
 }
 
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .content {
@@ -419,4 +425,46 @@ select {
   select {
     width: 100%;
   }
+
+  .factory-search {
+    width: 100%;
+  }
 }
+/* إضافة هذه الأنماط الجديدة */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: white;
+  padding: 1rem;
+  opacity: 0.9;
+  transform: scale(0.95);
+  z-index: 1000;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+  background: #e3f2fd;
+  border: 2px dashed #1976d2;
+  border-radius: 8px;
+}
+
+.student-card.cdk-drag-preview {
+  transform: scale(0.95) rotate(2deg);
+  transition: transform 200ms ease;
+}
+
+.student-card.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.factory-dropzone.cdk-drop-list-dragging .student-card:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.add-factory-button .btn{
+height: 45px;
+}
+.header-content select{
+  height: 45px;
+}
+/* بقية الأنماط تبقى كما هي */

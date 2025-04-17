@@ -11,7 +11,7 @@ const translations = {
     settings: 'Settings',
     profile: 'Profile',
     logout: 'Logout',
-    
+
     // Dashboard
     dashboard: 'Dashboard',
     students_distribution: 'Students Distribution',
@@ -20,7 +20,7 @@ const translations = {
     departments: 'Departments',
     active: 'Active',
     growth: 'Growth',
-    
+
     // Table Headers
     student: 'Student',
     department: 'Department',
@@ -29,13 +29,13 @@ const translations = {
     stage: 'Stage',
     date: 'Date',
     actions: 'Actions',
-    
+
     // Filters and Sorting
     filters: 'Filters',
     sort: 'Sort',
     sort_by: 'Sort by',
     all: 'All',
-    
+
     // Actions
     export: 'Export',
     add_student: 'Add Student',
@@ -46,7 +46,7 @@ const translations = {
 
     // Statistics
     department_distribution: 'Department Distribution',
-    
+
     // Pagination
     showing: 'Showing',
     to: 'to',
@@ -55,9 +55,13 @@ const translations = {
     per_page_5: '5 per page',
     per_page_10: '10 per page',
     per_page_20: '20 per page',
-    
+
     // New translation key
     back_to_home: 'Back to Home',
+    batch: 'Batch',
+    month: 'Month',
+    year: 'Year',
+    day: 'Day',
   },
   ar: {
     // Navigation
@@ -68,7 +72,7 @@ const translations = {
     settings: 'الإعدادات',
     profile: 'الملف الشخصي',
     logout: 'تسجيل الخروج',
-    
+
     // Dashboard
     dashboard: 'لوحة التحكم',
     students_distribution: 'توزيع الطلاب',
@@ -77,7 +81,7 @@ const translations = {
     departments: 'الأقسام',
     active: 'نشط',
     growth: 'النمو',
-    
+
     // Table Headers
     student: 'الطالب',
     department: 'القسم',
@@ -86,13 +90,13 @@ const translations = {
     stage: 'المرحلة',
     date: 'التاريخ',
     actions: 'الإجراءات',
-    
+
     // Filters and Sorting
     filters: 'التصفية',
     sort: 'ترتيب',
     sort_by: 'ترتيب حسب',
     all: 'الكل',
-    
+
     // Actions
     export: 'تصدير',
     add_student: 'إضافة طالب',
@@ -103,7 +107,7 @@ const translations = {
 
     // Statistics
     department_distribution: 'توزيع الأقسام',
-    
+
     // Pagination
     showing: 'عرض',
     to: 'إلى',
@@ -112,13 +116,17 @@ const translations = {
     per_page_5: '5 لكل صفحة',
     per_page_10: '10 لكل صفحة',
     per_page_20: '20 لكل صفحة',
-    
+
     // New translation key
     back_to_home: 'العودة للرئيسية',
+    batch: 'دفعة',
+    month: 'شهر',
+    year: 'سنة',
+    day: 'يوم',
   }
 } as const;
 
-type TranslationKeys = keyof typeof translations.en;
+type TranslationKeys = keyof typeof translations.en | 'year';
 
 @Injectable({
   providedIn: 'root'
@@ -137,6 +145,6 @@ export class TranslationService {
 
   translate(key: TranslationKeys): string {
     const currentLang = this.currentLang.value;
-    return translations[currentLang][key];
+    return translations[currentLang][key as keyof typeof translations.en];
   }
 }

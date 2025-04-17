@@ -12,13 +12,17 @@
       <div class="filters">
         <div class="search-box">
           <i class="bi bi-search"></i>
-          <input 
-            type="text" 
-            [(ngModel)]="searchTerm" 
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
             placeholder="Search students..."
           >
         </div>
-        
+        <div class="add-factory-button">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFactoryModal">
+            Add Factory
+          </button>
+        </div>
         <select [(ngModel)]="selectedDepartment">
           <option *ngFor="let dept of departments" [value]="dept">
             {{dept}} Department
@@ -27,14 +31,18 @@
 
         <select [(ngModel)]="selectedStage">
           <option *ngFor="let stage of stages" [value]="stage">
-            {{stage}}
+            {{stage}} Stage
           </option>
         </select>
 
-        <select [(ngModel)]="selectedGroup">
-          <option *ngFor="let group of groups" [value]="group">
-            {{group}}
+        <select [(ngModel)]="selectedBatch">
+          <option *ngFor="let batch of batches" [value]="batch">
+            {{batch}} Batch
           </option>
+        </select>
+
+        <select [(ngModel)]="selectedFactoryType">
+          <option *ngFor="let type of factoryTypes" [value]="type">{{type}} Factories</option>
         </select>
       </div>
     </div>
@@ -48,8 +56,8 @@
         <h3>Students ({{filteredStudents.length}})</h3>
         <div class="selection-controls">
           <label class="select-all-checkbox">
-            <input type="checkbox" 
-                   [checked]="selectAll" 
+            <input type="checkbox"
+                   [checked]="selectAll"
                    (change)="toggleSelectAll()">
             <span>Select All</span>
           </label>
@@ -59,25 +67,29 @@
         </div>
       </div>
 
-      <div class="students-container" cdkDropList [cdkDropListData]="filteredStudents" 
-           [cdkDropListConnectedTo]="['factory-droplist']" 
-           [cdkDropListSortingDisabled]="true">
-        <div class="student-card" *ngFor="let student of filteredStudents"
-             cdkDrag [cdkDragData]="student"
+      <div class="students-container"
+           cdkDropList
+           [cdkDropListData]="filteredStudents"
+           [cdkDropListConnectedTo]="factoryDropLists"
+           (cdkDropListDropped)="onDrop($event)">
+        <div class="student-card"
+             *ngFor="let student of filteredStudents"
+             cdkDrag
+             [cdkDragData]="student"
              [class.selected]="student.selected">
           <div class="checkbox-wrapper">
-            <input type="checkbox" 
+            <input type="checkbox"
                    [checked]="student.selected"
                    (click)="toggleSelection($event, student)">
           </div>
           <div class="student-info" (click)="toggleSelection($event, student)">
             <h4>{{student.name}}</h4>
-            <p>{{student.department}} | {{student.stage}} | {{student.group}}</p>
+            <p>{{student.department}} | {{student.stage}} | {{student.batch}}</p>
           </div>
           <div class="student-factory">
             <span *ngIf="student.factory" class="factory-badge">
               {{student.factory}}
-              <button class="remove-btn" (click)="removeFromFactory(student)">
+              <button class="remove-btn" (click)="removeFromFactory(student, $event)">
                 <i class="bi bi-x"></i>
               </button>
             </span>
@@ -92,33 +104,31 @@
         <h3>Factories</h3>
         <div class="factory-search">
           <i class="bi bi-search"></i>
-          <input 
-            type="text" 
-            [(ngModel)]="factorySearchTerm" 
+          <input
+            type="text"
+            [(ngModel)]="factorySearchTerm"
             placeholder="Search factories..."
           >
         </div>
       </div>
       <div class="factories-grid">
-        <div class="factory-card" *ngFor="let factory of filteredFactories">
+        <div class="factory-card" *ngFor="let factory of filteredFactories" (click)="openFactoryDetails(factory)">
           <div class="factory-header">
             <h4>{{factory.name}}</h4>
             <div class="capacity-badge" [class.full]="factory.assignedStudents >= factory.capacity">
               {{factory.assignedStudents}}/{{factory.capacity}}
             </div>
           </div>
-          
+
           <div class="factory-content">
             <div class="progress-bar">
               <div class="progress" [style.width.%]="(factory.assignedStudents / factory.capacity) * 100"></div>
             </div>
-            
-            <div class="factory-dropzone" 
-                 cdkDropList
-                 id="factory-droplist"
-                 [cdkDropListData]="factory.students"
-                 (cdkDropListDropped)="onDrop($event, factory)"
-                 [class.full]="factory.assignedStudents >= factory.capacity">
+            <div class="factory-dropzone"
+            cdkDropList
+            [id]="'factory-' + factory.id"
+            [cdkDropListData]="factory.students"
+            (cdkDropListDropped)="onDrop($event, factory)">
               <div class="dropzone-content" *ngIf="factory.students.length === 0">
                 <i class="bi bi-plus-circle"></i>
                 <span *ngIf="factory.assignedStudents < factory.capacity">
@@ -128,17 +138,106 @@
                   Factory is full
                 </span>
               </div>
-              
-              <!-- Assigned Students -->
+
               <div class="assigned-students">
                 <div class="assigned-student" *ngFor="let student of factory.students">
                   <span class="student-name">{{student.name}}</span>
-                  <button class="remove-btn" (click)="removeFromFactory(student)">
+                  <button class="remove-btn" (click)="removeFromFactory(student, $event)">
                     <i class="bi bi-x"></i>
                   </button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Factory Modal -->
+    <div class="modal fade" id="addFactoryModal" tabindex="-1" aria-labelledby="addFactoryModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addFactoryModalLabel">Add New Factory</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="factoryName" class="form-label">Factory Name</label>
+                <input type="text" class="form-control" id="factoryName" #factoryName placeholder="Enter factory name">
+              </div>
+              <div class="mb-3">
+                <label for="factoryAddress" class="form-label">Address</label>
+                <input type="text" class="form-control" id="factoryAddress" #factoryAddress placeholder="Enter address">
+              </div>
+              <div class="mb-3">
+                <label for="factoryPhone" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="factoryPhone" #factoryPhone placeholder="Enter phone number">
+              </div>
+              <div class="mb-3">
+                <label for="factoryDepartment" class="form-label">Department</label>
+                <select class="form-select" id="factoryDepartment" #factoryDepartment>
+                  <option value="" disabled selected>Select department</option>
+                  <option *ngFor="let dept of departments.slice(1)" [value]="dept">{{dept}}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" (click)="addFactory(factoryName.value, factoryAddress.value, factoryPhone.value, factoryDepartment.value)">Save Factory</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Factory Details Modal -->
+    <div class="modal fade" id="factoryDetailsModal" tabindex="-1" aria-labelledby="factoryDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="factoryDetailsModalLabel">Factory Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" *ngIf="selectedFactory">
+            <div class="mb-3">
+              <label class="form-label"><strong>Factory Name:</strong></label>
+              <p>{{selectedFactory.name}}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Address:</strong></label>
+              <p>{{selectedFactory.address || 'Not specified'}}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Phone:</strong></label>
+              <p>{{selectedFactory.phone || 'Not specified'}}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Department:</strong></label>
+              <p>{{selectedFactory.department || 'Not specified'}}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Capacity:</strong></label>
+              <p>{{selectedFactory.assignedStudents}} / {{selectedFactory.capacity}}</p>
+            </div>
+            <div class="mb-3">
+              <label class="form-label"><strong>Assigned Students:</strong></label>
+              <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let student of selectedFactory.students">
+                  {{student.name}} ({{student.department}} - {{student.stage}})
+                  <button class="btn btn-sm btn-outline-danger" (click)="removeFromFactory(student, $event)">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </li>
+                <li class="list-group-item text-muted" *ngIf="selectedFactory.students.length === 0">
+                  No students assigned
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

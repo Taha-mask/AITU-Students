@@ -12,11 +12,13 @@ interface Student {
   student: string;
   department: string;
   factory: string;
-  group: string;
+  batch: string; // Changed from group to batch
   stage: string;
-  date: string;
+  date: Date; // Changed from string to Date
   selected: boolean;
 }
+
+export type TranslationKeys = 'dashboard' | 'students_distribution' | 'analytics' | 'settings' | 'student' | 'filters' | 'sort' | 'export' | 'add_student' | 'total_students' | 'departments' | 'active' | 'growth' | 'sort_by' | 'department' | 'factory' | 'batch' | 'stage' | 'year' | 'month' | 'department_distribution' | 'showing' | 'to' | 'of' | 'entries' | 'per_page_5' | 'per_page_10' | 'per_page_20';
 
 @Component({
   selector: 'app-home',
@@ -35,29 +37,53 @@ export class HomeComponent {
   Math = Math;
   isSidebarOpen = true;
   students: Student[] = [
-    { id: 1, student: 'Samanta William', department: 'Engineering', factory: 'Factory A', group: 'Group 1', stage: 'Stage 1', date: 'March 26, 2021', selected: false },
-    { id: 2, student: 'Tony Soap', department: 'Science', factory: 'Factory B', group: 'Group 2', stage: 'Stage 2', date: 'March 26, 2021', selected: false },
-    { id: 3, student: 'Karen Hope', department: 'Arts', factory: 'Factory C', group: 'Group 3', stage: 'Stage 3', date: 'March 26, 2021', selected: false },
-    { id: 4, student: 'Jordan Nico', department: 'Engineering', factory: 'Factory A', group: 'Group 1', stage: 'Stage 1', date: 'March 26, 2021', selected: false },
-    { id: 5, student: 'Nadila Adja', department: 'Science', factory: 'Factory B', group: 'Group 2', stage: 'Stage 2', date: 'March 26, 2021', selected: false },
-    { id: 6, student: 'Johnny Ahmad', department: 'Arts', factory: 'Factory C', group: 'Group 3', stage: 'Stage 3', date: 'March 26, 2021', selected: false }
+    { id: 1, student: 'Samanta William', department: 'Engineering', factory: 'Factory A', batch: 'Batch 1', stage: 'School', date: new Date(2021, 2, 26), selected: false },
+    { id: 2, student: 'Tony Soap', department: 'Science', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 2, 15), selected: false },
+    { id: 3, student: 'Karen Hope', department: 'Arts', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 1, 10), selected: false },
+    { id: 4, student: 'Jordan Nico', department: 'Engineering', factory: 'Factory A', batch: 'Batch 1', stage: 'School', date: new Date(2021, 2, 5), selected: false },
+    { id: 5, student: 'Nadila Adja', department: 'Science', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 1, 20), selected: false },
+    { id: 6, student: 'Johnny Ahmad', department: 'Arts', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 0, 15), selected: false }
   ];
 
   filteredStudents: Student[] = [...this.students];
   searchTerm: string = '';
   departments: string[] = ['Engineering', 'Science', 'Arts'];
   factories: string[] = ['Factory A', 'Factory B', 'Factory C'];
-  groups: string[] = ['Group 1', 'Group 2', 'Group 3'];
-  stages: string[] = ['Stage 1', 'Stage 2', 'Stage 3'];
+  allBatches: string[] = ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'];
+  batches: string[] = this.allBatches;
+  stages: string[] = ['School', 'Institute', 'Faculty'];
   selectedDepartment: string = '';
   selectedFactory: string = '';
-  selectedGroup: string = '';
+  selectedBatch: string = ''; // Changed from selectedGroup
   selectedStage: string = '';
+  selectedYear: string = '';
+  selectedMonth: string = '';
+  selectedDay: string = ''; // New property for day filter
   showFilters: boolean = false;
   showSort: boolean = false;
   currentPage: number = 1;
   itemsPerPage: number = 5;
   totalStudents: number = 0;
+
+  // Date filter options
+  years: string[] = ['2020', '2021', '2022', '2023'];
+  months = [
+    { value: '0', name: 'January' },
+    { value: '1', name: 'February' },
+    { value: '2', name: 'March' },
+    { value: '3', name: 'April' },
+    { value: '4', name: 'May' },
+    { value: '5', name: 'June' },
+    { value: '6', name: 'July' },
+    { value: '7', name: 'August' },
+    { value: '8', name: 'September' },
+    { value: '9', name: 'October' },
+    { value: '10', name: 'November' },
+    { value: '11', name: 'December' }
+  ];
+
+  days = Array.from({ length: 30 }, (_, i) => ({ value: (i + 1).toString(), name: (i + 1).toString() }));
+
   sortOptions = [
     { value: 'name_asc', label: 'Name (A-Z)' },
     { value: 'name_desc', label: 'Name (Z-A)' },
@@ -85,12 +111,11 @@ export class HomeComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Update the student in the array
         const index = this.students.findIndex(s => s.id === result.id);
         if (index !== -1) {
           this.students[index] = result;
-          this.filteredStudents = [...this.students]; // Update filtered list
-          this.applyFilters(); // Reapply any active filters
+          this.filteredStudents = [...this.students];
+          this.applyFilters();
         }
       }
     });
@@ -104,11 +129,10 @@ export class HomeComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Generate new ID
         const maxId = Math.max(...this.students.map(s => s.id), 0);
         result.id = maxId + 1;
-        
-        // Add the new student
+        result.date = new Date(); // Set current date for new students
+
         this.students.unshift(result);
         this.filteredStudents = [...this.students];
         this.totalStudents = this.students.length;
@@ -145,13 +169,29 @@ export class HomeComponent {
     this.applyFilters();
   }
 
-  filterByGroup(group: string) {
-    this.selectedGroup = group;
+  filterByBatch(batch: string) { // Changed from filterByGroup
+    this.selectedBatch = batch;
     this.applyFilters();
   }
 
   filterByStage(stage: string) {
     this.selectedStage = stage;
+    this.selectedBatch = '';
+    this.applyFilters();
+  }
+
+  filterByYear(year: string) {
+    this.selectedYear = year;
+    this.applyFilters();
+  }
+
+  filterByMonth(month: string) {
+    this.selectedMonth = month;
+    this.applyFilters();
+  }
+
+  filterByDay(day: string) {
+    this.selectedDay = day;
     this.applyFilters();
   }
 
@@ -160,17 +200,20 @@ export class HomeComponent {
       const matchesSearch = student.student.toLowerCase().includes(this.searchTerm.toLowerCase());
       const matchesDepartment = !this.selectedDepartment || student.department === this.selectedDepartment;
       const matchesFactory = !this.selectedFactory || student.factory === this.selectedFactory;
-      const matchesGroup = !this.selectedGroup || student.group === this.selectedGroup;
+      const matchesBatch = !this.selectedBatch || student.batch === this.selectedBatch;
       const matchesStage = !this.selectedStage || student.stage === this.selectedStage;
+      const matchesYear = !this.selectedYear || student.date.getFullYear().toString() === this.selectedYear;
+      const matchesMonth = !this.selectedMonth || student.date.getMonth().toString() === this.selectedMonth;
+      const matchesDay = !this.selectedDay || student.date.getDate().toString() === this.selectedDay;
 
-      return matchesSearch && matchesDepartment && matchesFactory && matchesGroup && matchesStage;
+      return matchesSearch && matchesDepartment && matchesFactory && matchesBatch && matchesStage && matchesYear && matchesMonth && matchesDay;
     });
-    this.currentPage = 1; // Reset to first page when filters change
+    this.currentPage = 1;
   }
 
   applySorting(sortValue: string) {
     this.selectedSort = sortValue;
-    
+
     switch (sortValue) {
       case 'name_asc':
         this.filteredStudents.sort((a, b) => a.student.localeCompare(b.student));
@@ -179,15 +222,18 @@ export class HomeComponent {
         this.filteredStudents.sort((a, b) => b.student.localeCompare(a.student));
         break;
       case 'date_new':
-        this.filteredStudents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.filteredStudents.sort((a, b) => b.date.getTime() - a.date.getTime());
         break;
       case 'date_old':
-        this.filteredStudents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        this.filteredStudents.sort((a, b) => a.date.getTime() - b.date.getTime());
         break;
     }
   }
 
   deleteStudent(student: Student) {
+    if (!confirm('Are you sure you want to delete this student?')) {
+      return;
+    }
     const index = this.students.findIndex(s => s.id === student.id);
     if (index !== -1) {
       this.students.splice(index, 1);
@@ -198,25 +244,22 @@ export class HomeComponent {
   }
 
   exportData() {
-    // Convert filtered students to CSV
-    const headers = ['ID', 'Student', 'Department', 'Factory', 'Group', 'Stage', 'Date'];
+    const headers = ['ID', 'Student', 'Department', 'Factory', 'Batch', 'Stage', 'Date'];
     const csvData = this.filteredStudents.map(student => [
       student.id,
       student.student,
       student.department,
       student.factory,
-      student.group,
+      student.batch,
       student.stage,
-      student.date
+      student.date.toLocaleDateString()
     ]);
 
-    // Create CSV content
     const csvContent = [
       headers.join(','),
       ...csvData.map(row => row.map(cell => `"${cell}"`).join(','))
     ].join('\n');
 
-    // Create a Blob and download
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -238,5 +281,14 @@ export class HomeComponent {
       };
     });
     return stats;
+  }
+
+  get filteredBatches(): string[] {
+    switch (this.selectedStage) {
+      case 'School': return ['Batch 1', 'Batch 2', 'Batch 3'];
+      case 'Institute': return ['Batch 1', 'Batch 2'];
+      case 'Faculty': return ['Batch 3', 'Batch 4'];
+      default: return this.allBatches;
+    }
   }
 }

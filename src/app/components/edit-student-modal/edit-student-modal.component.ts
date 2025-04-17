@@ -8,7 +8,7 @@ interface Student {
   student: string;
   department: string;
   factory: string;
-  batch: string;
+  group: string;
   stage: string;
   date: string;
   selected: boolean;
@@ -39,30 +39,25 @@ interface Student {
               <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
             </select>
           </div>
-        
-          <div class="mb-3">
-            <label for="stage" class="form-label">Stage</label>
-            <select class="form-select" id="stage"
-                    [(ngModel)]="selectedStage"
-                    (ngModelChange)="onStageChange($event)">
-              <option value="" disabled>Select stage</option>
-              <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="batch" class="form-label">Batch</label>
-            <select class="form-select" id="batch"
-                    [(ngModel)]="editedStudent.batch"
-                    [disabled]="!selectedStage">
-              <option value="" disabled>Select batch</option>
-              <option *ngFor="let batch of filteredBatches" [value]="batch">{{batch}}</option>
-            </select>
-          </div>
           <div class="mb-3">
             <label for="factory" class="form-label">Factory</label>
             <select class="form-select" id="factory" [(ngModel)]="editedStudent.factory">
               <option value="" disabled>Select factory</option>
               <option *ngFor="let factory of factories" [value]="factory">{{factory}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="group" class="form-label">Group</label>
+            <select class="form-select" id="group" [(ngModel)]="editedStudent.group">
+              <option value="" disabled>Select group</option>
+              <option *ngFor="let group of groups" [value]="group">{{group}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="stage" class="form-label">Stage</label>
+            <select class="form-select" id="stage" [(ngModel)]="editedStudent.stage">
+              <option value="" disabled>Select stage</option>
+              <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
             </select>
           </div>
         </div>
@@ -221,20 +216,10 @@ interface Student {
 })
 export class EditStudentModalComponent {
   editedStudent: Student;
-  departments = ['IT', 'Mechanics', 'Electrical'];
+  departments = ['Engineering', 'Science', 'Arts'];
   factories = ['Factory A', 'Factory B', 'Factory C'];
-  allBatches: string[] = ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'];
-  batches: string[] = this.allBatches;
-  stages: string[] = ['School', 'Institute', 'Faculty'];
-  selectedStage: string;
-  get filteredBatches(): string[] {
-    switch (this.selectedStage) {
-      case 'School': return ['Batch 1', 'Batch 2', 'Batch 3'];
-      case 'Institute': return ['Batch 1', 'Batch 2'];
-      case 'Faculty': return ['Batch 3', 'Batch 4'];
-      default: return this.allBatches;
-    }
-  }
+  groups = ['Group 1', 'Group 2', 'Group 3'];
+  stages = ['Stage 1', 'Stage 2', 'Stage 3'];
   isEdit: boolean;
 
   constructor(
@@ -247,18 +232,11 @@ export class EditStudentModalComponent {
       student: '',
       department: this.departments[0],
       factory: this.factories[0],
-      batch: this.batches[0],
+      group: this.groups[0],
       stage: this.stages[0],
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
       selected: false
     };
-    this.selectedStage = this.editedStudent.stage;
-  }
-
-  onStageChange(stage: string) {
-    this.selectedStage = stage;
-    this.editedStudent.stage = stage;
-    this.editedStudent.batch = '';
   }
 
   save() {

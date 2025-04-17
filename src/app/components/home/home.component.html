@@ -31,7 +31,6 @@
     <app-navbar></app-navbar>
 
     <!-- Mobile Sidebar Toggle -->
-  
 
     <div class="content-container">
       <!-- Top Header -->
@@ -40,7 +39,7 @@
           <i class="bi bi-search"></i>
           <input type="text" [(ngModel)]="searchTerm" (input)="updateSearchTerm($event)" placeholder="{{ translationService.translate('student') }}">
         </div>
-        
+
         <div class="header-actions">
           <div class="btn-group">
             <button class="btn btn-outline-primary" (click)="toggleFilters()">
@@ -108,7 +107,7 @@
           <div class="sort-options">
             <h5>{{ translationService.translate('sort_by') }}</h5>
             <div class="sort-chips">
-              <div class="chip" 
+              <div class="chip"
                    *ngFor="let option of sortOptions"
                    [class.active]="selectedSort === option.value"
                    (click)="applySorting(option.value)">
@@ -139,10 +138,10 @@
           </div>
 
           <div class="filter-section">
-            <h5>{{ translationService.translate('group') }}</h5>
-            <select class="form-select" [(ngModel)]="selectedGroup" (change)="filterByGroup(selectedGroup)">
+            <h5>{{ translationService.translate('batch') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedBatch" (change)="filterByBatch(selectedBatch)" [disabled]="!selectedStage">
               <option value="">{{ translationService.translate('all') }}</option>
-              <option *ngFor="let group of groups" [value]="group">{{group}}</option>
+              <option *ngFor="let batch of filteredBatches" [value]="batch">{{batch}}</option>
             </select>
           </div>
 
@@ -151,6 +150,31 @@
             <select class="form-select" [(ngModel)]="selectedStage" (change)="filterByStage(selectedStage)">
               <option value="">{{ translationService.translate('all') }}</option>
               <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
+            </select>
+          </div>
+
+          <!-- Date Filters -->
+          <div class="filter-section">
+            <h5>{{ translationService.translate('day') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedDay" (change)="filterByDay(selectedDay)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let day of days" [value]="day.value">{{day.name}}</option>
+            </select>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('year') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedYear" (change)="filterByYear(selectedYear)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let year of years" [value]="year">{{year}}</option>
+            </select>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('month') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedMonth" (change)="filterByMonth(selectedMonth)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let month of months" [value]="month.value">{{month.name}}</option>
             </select>
           </div>
         </div>
@@ -184,7 +208,7 @@
               <th>{{ translationService.translate('student') }}</th>
               <th>{{ translationService.translate('department') }}</th>
               <th>{{ translationService.translate('factory') }}</th>
-              <th>{{ translationService.translate('group') }}</th>
+              <th>{{ translationService.translate('batch') }}</th>
               <th>{{ translationService.translate('stage') }}</th>
               <th>{{ translationService.translate('date') }}</th>
               <th>{{ translationService.translate('actions') }}</th>
@@ -203,9 +227,9 @@
               </td>
               <td>{{student.department}}</td>
               <td>{{student.factory}}</td>
-              <td>{{student.group}}</td>
+              <td>{{student.batch}}</td>
               <td>{{student.stage}}</td>
-              <td>{{student.date}}</td>
+              <td>{{student.date | date:'mediumDate'}}</td>
               <td>
                 <div class="action-buttons">
                   <button class="btn-icon" (click)="editStudent(student)">
@@ -229,7 +253,7 @@
               <option [value]="20">{{ translationService.translate('per_page_20') }}</option>
             </select>
           </div>
-          
+
           <div class="pagination-info">
             {{ translationService.translate('showing') }} {{(currentPage - 1) * itemsPerPage + 1}} {{ translationService.translate('to') }} {{Math.min(currentPage * itemsPerPage, filteredStudents.length)}} {{ translationService.translate('of') }} {{filteredStudents.length}} {{ translationService.translate('entries') }}
           </div>

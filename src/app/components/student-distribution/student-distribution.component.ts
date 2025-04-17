@@ -1,18 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
-import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem, CdkDropList } from '@angular/cdk/drag-drop';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TranslationService } from '../../services/translation.service';
+import * as bootstrap from 'bootstrap';
 
 interface Student {
   id: number;
   name: string;
   factory: string | null;
   department: string;
-  group: string;
+  batch: string;
   stage: string;
   selected: boolean;
 }
@@ -23,6 +24,10 @@ interface Factory {
   capacity: number;
   assignedStudents: number;
   students: Student[];
+  address?: string;
+  phone?: string;
+  department?: string;
+  type: string;
 }
 
 @Component({
@@ -33,49 +38,55 @@ interface Factory {
   styleUrls: ['./student-distribution.component.css']
 })
 export class StudentDistributionComponent implements OnInit {
+  @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
+
+  factoryTypes: string[] = ['All', 'Internal', 'External'];
+  selectedFactoryType: string = 'All';
+
   constructor(public translationService: TranslationService) {}
-  
+
   students: Student[] = [
-    { id: 1, name: 'Ahmed Mohamed', factory: null, department: 'Engineering', group: 'Group A', stage: 'Stage 1', selected: false },
-    { id: 2, name: 'Sara Ahmed', factory: null, department: 'Science', group: 'Group B', stage: 'Stage 2', selected: false },
-    { id: 3, name: 'Omar Ali', factory: null, department: 'Engineering', group: 'Group A', stage: 'Stage 1', selected: false },
-    { id: 4, name: 'Nour Hassan', factory: null, department: 'Science', group: 'Group C', stage: 'Stage 3', selected: false },
-    { id: 5, name: 'Mona Khaled', factory: null, department: 'Engineering', group: 'Group B', stage: 'Stage 2', selected: false }
+    { id: 1, name: 'Ahmed Mohamed', factory: null, department: 'IT', batch: 'Batch 1', stage: 'School', selected: false },
+    { id: 2, name: 'Sara Ahmed', factory: null, department: 'Mechanics', batch: 'Batch 2', stage: 'Institute', selected: false },
+    { id: 3, name: 'Omar Ali', factory: null, department: 'Electrical', batch: 'Batch 1', stage: 'Faculty', selected: false },
+    { id: 4, name: 'Nour Hassan', factory: null, department: 'IT', batch: 'Batch 3', stage: 'School', selected: false },
+    { id: 5, name: 'Mona Khaled', factory: null, department: 'Mechanics', batch: 'Batch 2', stage: 'Institute', selected: false }
   ];
 
   factories: Factory[] = [
-    { id: 1, name: 'Factory A', capacity: 3, assignedStudents: 0, students: [] },
-    { id: 2, name: 'Factory B', capacity: 2, assignedStudents: 0, students: [] },
-    { id: 3, name: 'Factory C', capacity: 2, assignedStudents: 0, students: [] }
+    { id: 1, name: 'Factory A', capacity: 3, assignedStudents: 0, students: [], address: '123 Industrial Zone', phone: '01012345678', department: 'IT', type: 'Internal' },
+    { id: 2, name: 'Factory B', capacity: 2, assignedStudents: 0, students: [], address: '456 Business Park', phone: '01087654321', department: 'Mechanics', type: 'External' },
+    { id: 3, name: 'Factory C', capacity: 2, assignedStudents: 0, students: [], address: '789 Tech Valley', phone: '01011223344', department: 'Electrical', type: 'Internal' }
   ];
 
-  departments: string[] = ['All', 'Engineering', 'Science'];
-  stages: string[] = ['All', 'Stage 1', 'Stage 2', 'Stage 3'];
-  groups: string[] = ['All', 'Group A', 'Group B', 'Group C'];
-
+  departments: string[] = ['All', 'IT', 'Mechanics', 'Electrical'];
+  stages: string[] = ['All', 'School', 'Institute', 'Faculty'];
+  batches: string[] = ['All', 'Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'];
   selectedDepartment: string = 'All';
   selectedStage: string = 'All';
-  selectedGroup: string = 'All';
+  selectedBatch: string = 'All';
   searchTerm: string = '';
   factorySearchTerm: string = '';
   selectAll: boolean = false;
+  selectedFactory: Factory | null = null;
+  factoryDropLists: string[] = [];
 
   get filteredStudents(): Student[] {
     return this.students.filter(student => {
       const matchesDepartment = this.selectedDepartment === 'All' || student.department === this.selectedDepartment;
       const matchesStage = this.selectedStage === 'All' || student.stage === this.selectedStage;
-      const matchesGroup = this.selectedGroup === 'All' || student.group === this.selectedGroup;
+      const matchesBatch = this.selectedBatch === 'All' || student.batch === this.selectedBatch;
       const matchesSearch = student.name.toLowerCase().includes(this.searchTerm.toLowerCase());
       const notAssigned = !student.factory;
-      
-      return matchesDepartment && matchesStage && matchesGroup && matchesSearch && notAssigned;
+
+      return matchesDepartment && matchesStage && matchesBatch && matchesSearch && notAssigned;
     });
   }
 
   get filteredFactories(): Factory[] {
-    return this.factories.filter(factory => 
-      factory.name.toLowerCase().includes(this.factorySearchTerm.toLowerCase())
-    );
+    return this.factories
+      .filter(f => this.selectedFactoryType === 'All' || f.type === this.selectedFactoryType)
+      .filter(f => f.name.toLowerCase().includes(this.factorySearchTerm.toLowerCase()));
   }
 
   get selectedStudents(): Student[] {
@@ -84,6 +95,22 @@ export class StudentDistributionComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateFactoryAssignments();
+    this.factoryDropLists = this.factories.map(f => `factory-${f.id}`);
+  }
+
+  ngAfterViewInit(): void {
+    this.dropLists.changes.subscribe(() => {
+      this.factoryDropLists = this.factories.map(f => `factory-${f.id}`);
+    });
+  }
+
+  openFactoryDetails(factory: Factory): void {
+    this.selectedFactory = factory;
+    const modalElement = document.getElementById('factoryDetailsModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
   }
 
   toggleSelectAll(): void {
@@ -95,20 +122,17 @@ export class StudentDistributionComponent implements OnInit {
 
   toggleSelection(event: MouseEvent, student: Student): void {
     if (event.ctrlKey || event.metaKey) {
-      // Toggle individual selection
       student.selected = !student.selected;
     } else if (event.shiftKey && this.lastSelectedStudent) {
-      // Range selection
       const currentIndex = this.filteredStudents.indexOf(student);
       const lastIndex = this.filteredStudents.indexOf(this.lastSelectedStudent);
       const start = Math.min(currentIndex, lastIndex);
       const end = Math.max(currentIndex, lastIndex);
-      
+
       for (let i = start; i <= end; i++) {
         this.filteredStudents[i].selected = true;
       }
     } else {
-      // Single selection
       student.selected = !student.selected;
     }
     this.lastSelectedStudent = student;
@@ -122,32 +146,56 @@ export class StudentDistributionComponent implements OnInit {
     this.selectAll = filteredStudents.length > 0 && filteredStudents.every(student => student.selected);
   }
 
-  onDrop(event: CdkDragDrop<Student[]>, factory: Factory): void {
+  onDrop(event: CdkDragDrop<Student[]>, factory?: Factory): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      const selectedStudents = this.selectedStudents;
-      const availableCapacity = factory.capacity - factory.assignedStudents;
+      const student: Student = event.item.data;
 
-      if (selectedStudents.length > availableCapacity) {
-        alert(`Cannot assign ${selectedStudents.length} students. ${factory.name} only has space for ${availableCapacity} more students.`);
-        return;
+      if (factory) {
+        // Check if factory is full
+        if (factory.assignedStudents >= factory.capacity) {
+          alert(`Factory ${factory.name} is at full capacity (${factory.capacity})`);
+          return;
+        }
+
+        // Remove from previous factory if exists
+        if (student.factory) {
+          const prevFactory = this.factories.find(f => f.name === student.factory);
+          if (prevFactory) {
+            const index = prevFactory.students.indexOf(student);
+            if (index > -1) {
+              prevFactory.students.splice(index, 1);
+              prevFactory.assignedStudents--;
+            }
+          }
+        }
+
+        // Assign to new factory
+        student.factory = factory.name;
       }
 
-      selectedStudents.forEach(student => {
-        if (!student.factory) {
-          student.factory = factory.name;
-          factory.students.push(student);
-          factory.assignedStudents++;
-        }
-      });
+      // Transfer the student between containers
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
 
-      // Clear selection after drop
-      this.students.forEach(s => s.selected = false);
+      // Update the factory students and count
+      if (factory) {
+        factory.students = [...event.container.data];
+        factory.assignedStudents = factory.students.length;
+      }
     }
   }
 
-  removeFromFactory(student: Student): void {
+  removeFromFactory(student: Student, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
     const factory = this.factories.find(f => f.name === student.factory);
     if (factory) {
       const index = factory.students.indexOf(student);
@@ -160,21 +208,24 @@ export class StudentDistributionComponent implements OnInit {
   }
 
   private updateFactoryAssignments(): void {
-    // Reset assignments
     this.factories.forEach(factory => {
-      factory.assignedStudents = 0;
-      factory.students = [];
+      factory.assignedStudents = factory.students.length;
     });
-    
-    // Distribute students to factories
-    this.students.forEach(student => {
-      if (student.factory) {
-        const factory = this.factories.find(f => f.name === student.factory);
-        if (factory) {
-          factory.students.push(student);
-          factory.assignedStudents++;
-        }
-      }
-    });
+  }
+
+  addFactory(name: string, address: string, phone: string, department: string): void {
+    const newFactory: Factory = {
+      id: this.factories.length + 1,
+      name,
+      capacity: 5,
+      assignedStudents: 0,
+      students: [],
+      address,
+      phone,
+      department,
+      type: 'Internal'
+    };
+    this.factories.push(newFactory);
+    this.factoryDropLists = this.factories.map(f => `factory-${f.id}`);
   }
 }

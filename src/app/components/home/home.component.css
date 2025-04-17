@@ -646,3 +646,24 @@
   color: #1976d2;
   font-weight: 500;
 }
+
+/* Day Options Grid */
+.day-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 0.5rem;
+}
+.day-options button {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+.day-options button.selected {
+  background-color: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
