@@ -175,7 +175,7 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 10px;
 }
 
 .factories-header h3 {
@@ -234,12 +234,27 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
 }
 
 .factory-header h4 {
   margin: 0;
   color: #333;
+}
+
+.factory-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.factory-actions .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.factory-actions .btn i {
+  margin-right: 4px;
 }
 
 .capacity-badge {

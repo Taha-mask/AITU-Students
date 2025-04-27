@@ -22,6 +22,10 @@
         <i class="bi bi-gear-fill"></i>
         <span>{{ translationService.translate('settings') }}</span>
       </a>
+      <a class="nav-link logout-link" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>{{ translationService.translate('logout') }}</span>
+      </a>
     </nav>
   </aside>
 
@@ -121,6 +125,27 @@
       <!-- Filters Panel (Collapsible) -->
       <div class="filters-panel" [class.show]="showFilters">
         <div class="filters-content">
+
+
+
+          <div class="col-filter">
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('stage') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedStage" (change)="filterByStage(selectedStage)">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
+            </select>
+          </div>
+
+          <div class="filter-section">
+            <h5>{{ translationService.translate('batch') }}</h5>
+            <select class="form-select" [(ngModel)]="selectedBatch" (change)="filterByBatch(selectedBatch)" [disabled]="!selectedStage">
+              <option value="">{{ translationService.translate('all') }}</option>
+              <option *ngFor="let batch of filteredBatches" [value]="batch">{{batch}}</option>
+            </select>
+          </div>
+
           <div class="filter-section">
             <h5>{{ translationService.translate('department') }}</h5>
             <select class="form-select" [(ngModel)]="selectedDepartment" (change)="filterByDepartment(selectedDepartment)">
@@ -137,31 +162,11 @@
             </select>
           </div>
 
-          <div class="filter-section">
-            <h5>{{ translationService.translate('batch') }}</h5>
-            <select class="form-select" [(ngModel)]="selectedBatch" (change)="filterByBatch(selectedBatch)" [disabled]="!selectedStage">
-              <option value="">{{ translationService.translate('all') }}</option>
-              <option *ngFor="let batch of filteredBatches" [value]="batch">{{batch}}</option>
-            </select>
-          </div>
 
-          <div class="filter-section">
-            <h5>{{ translationService.translate('stage') }}</h5>
-            <select class="form-select" [(ngModel)]="selectedStage" (change)="filterByStage(selectedStage)">
-              <option value="">{{ translationService.translate('all') }}</option>
-              <option *ngFor="let stage of stages" [value]="stage">{{stage}}</option>
-            </select>
-          </div>
-
+         </div>
           <!-- Date Filters -->
-          <div class="filter-section">
-            <h5>{{ translationService.translate('day') }}</h5>
-            <select class="form-select" [(ngModel)]="selectedDay" (change)="filterByDay(selectedDay)">
-              <option value="">{{ translationService.translate('all') }}</option>
-              <option *ngFor="let day of days" [value]="day.value">{{day.name}}</option>
-            </select>
-          </div>
 
+      <div class="date-filter">
           <div class="filter-section">
             <h5>{{ translationService.translate('year') }}</h5>
             <select class="form-select" [(ngModel)]="selectedYear" (change)="filterByYear(selectedYear)">
@@ -177,7 +182,21 @@
               <option *ngFor="let month of months" [value]="month.value">{{month.name}}</option>
             </select>
           </div>
+
+        <div class="filter-section">
+          <h5>{{ translationService.translate('day') }}</h5>
+          <select class="form-select" [(ngModel)]="selectedDay" (change)="filterByDay(selectedDay)">
+            <option value="">{{ translationService.translate('all') }}</option>
+            <option *ngFor="let day of days" [value]="day.value">{{day.name}}</option>
+          </select>
         </div>
+        <div class="filter-section">
+          <h5>{{ translationService.translate('reset') }}</h5>
+
+          <button type="button" class="btn btn-primary px-4" style="width: 100%;" (click)="resetFilters()">{{ translationService.translate('reset') }}</button>
+        </div>
+        </div>
+      </div>
       </div>
 
       <!-- Analytics Section -->
@@ -206,39 +225,39 @@
                 <input type="checkbox" (change)="toggleAll($event)">
               </th>
               <th>{{ translationService.translate('student') }}</th>
+              <th>{{ translationService.translate('stage') }}</th>
+              <th>{{ translationService.translate('batch') }}</th>
               <th>{{ translationService.translate('department') }}</th>
               <th>{{ translationService.translate('factory') }}</th>
-              <th>{{ translationService.translate('batch') }}</th>
-              <th>{{ translationService.translate('stage') }}</th>
               <th>{{ translationService.translate('date') }}</th>
               <th>{{ translationService.translate('actions') }}</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let student of filteredStudents | slice: (currentPage-1) * itemsPerPage : currentPage * itemsPerPage">
+            <tr *ngFor="let student of filteredStudents | slice: (currentPage-1) * itemsPerPage : currentPage * itemsPerPage"
+                (click)="viewStudentDetails(student)"
+                class="student-row">
               <td>
-                <input type="checkbox" [(ngModel)]="student.selected">
+                <input type="checkbox" [(ngModel)]="student.selected" (click)="$event.stopPropagation()">
               </td>
               <td>
                 <div class="student-info">
-                  <div class="student-avatar">{{student.student.charAt(0)}}</div>
-                  <span>{{student.student}}</span>
+                  <div class="student-avatar">{{ student.student.charAt(0) }}</div>
+                  <span>{{ student.student }}</span>
                 </div>
               </td>
-              <td>{{student.department}}</td>
-              <td>{{student.factory}}</td>
-              <td>{{student.batch}}</td>
-              <td>{{student.stage}}</td>
-              <td>{{student.date | date:'mediumDate'}}</td>
-              <td>
-                <div class="action-buttons">
-                  <button class="btn-icon" (click)="editStudent(student)">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button class="btn-icon delete" (click)="deleteStudent(student)">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
+              <td>{{ student.department }}</td>
+              <td>{{ student.factory }}</td>
+              <td>{{ student.batch }}</td>
+              <td>{{ student.stage }}</td>
+              <td>{{ student.date | date }}</td>
+              <td class="action-buttons">
+                <button (click)="editStudent(student); $event.stopPropagation()">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button (click)="deleteStudent(student); $event.stopPropagation()">
+                  <i class="bi bi-trash"></i>
+                </button>
               </td>
             </tr>
           </tbody>

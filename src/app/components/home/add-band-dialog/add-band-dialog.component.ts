@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 interface Student {
   id: number;
@@ -15,12 +15,12 @@ interface Student {
   factory: string;
   batch: string;
   stage: string;
-  date: string;
+  date: Date;
   selected: boolean;
 }
 
 @Component({
-  selector: 'app-edit-student-modal',
+  selector: 'app-add-band-dialog',
   standalone: true,
   imports: [
     CommonModule,
@@ -31,81 +31,49 @@ interface Student {
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    MatSelectModule
+    MatProgressBarModule
   ],
   template: `
-    <div class="modal-overlay" (click)="dialogRef.close()">
-      <div class="student-modal" (click)="$event.stopPropagation()">
+    <div class="modal-overlay" (click)="onCancel()">
+      <div class="band-dialog" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>{{ isEdit ? 'Edit' : 'Add' }} Student</h2>
-          <button mat-icon-button (click)="dialogRef.close()">
+          <h2>Add New Band</h2>
+          <button mat-icon-button (click)="onCancel()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
 
         <div class="modal-content">
-          <form [formGroup]="studentForm" class="student-form">
+          <form [formGroup]="bandForm" class="band-form">
             <div class="form-section">
-              <h3>Student Information</h3>
+              <h3>Band Information</h3>
               <div class="form-grid">
                 <div class="form-item">
-                  <label>Student Name</label>
+                  <label>Band Name</label>
                   <div class="input-with-icon">
-                    <mat-icon class="field-icon">person</mat-icon>
-                    <input matInput formControlName="student" placeholder="Enter student name">
+                    <mat-icon class="field-icon">label</mat-icon>
+                    <input matInput formControlName="name" placeholder="Enter band name">
                   </div>
                 </div>
 
                 <div class="form-item">
-                  <label>Stage</label>
+                  <label>Value</label>
                   <div class="input-with-icon">
-                    <mat-icon class="field-icon">school</mat-icon>
-                    <mat-select formControlName="stage" (selectionChange)="onStageChange($event.value)">
-                      <mat-option *ngFor="let stage of stages" [value]="stage">{{stage}}</mat-option>
-                    </mat-select>
-                  </div>
-                </div>
-
-                <div class="form-item">
-                  <label>Batch</label>
-                  <div class="input-with-icon">
-                    <mat-icon class="field-icon">groups</mat-icon>
-                    <mat-select formControlName="batch" [disabled]="!studentForm.get('stage')?.value">
-                      <mat-option *ngFor="let batch of filteredBatches" [value]="batch">{{batch}}</mat-option>
-                    </mat-select>
-                  </div>
-                </div>
-
-                <div class="form-item">
-                  <label>Department</label>
-                  <div class="input-with-icon">
-                    <mat-icon class="field-icon">business</mat-icon>
-                    <mat-select formControlName="department">
-                      <mat-option *ngFor="let dept of departments" [value]="dept">{{dept}}</mat-option>
-                    </mat-select>
-                  </div>
-                </div>
-
-                <div class="form-item">
-                  <label>Factory</label>
-                  <div class="input-with-icon">
-                    <mat-icon class="field-icon">factory</mat-icon>
-                    <mat-select formControlName="factory">
-                      <mat-option *ngFor="let factory of factories" [value]="factory">{{factory}}</mat-option>
-                    </mat-select>
+                    <mat-icon class="field-icon">grade</mat-icon>
+                    <input matInput type="number" formControlName="value" min="0" max="10" placeholder="Enter value (0-10)">
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="form-actions">
-              <button mat-button (click)="dialogRef.close()">
+              <button mat-button (click)="onCancel()">
                 <mat-icon>close</mat-icon>
                 Cancel
               </button>
-              <button mat-raised-button color="primary" (click)="save()" [disabled]="studentForm.invalid">
-                <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
-                {{ isEdit ? 'Save Changes' : 'Add Student' }}
+              <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="bandForm.invalid">
+                <mat-icon>add</mat-icon>
+                Add Band
               </button>
             </div>
           </form>
@@ -127,10 +95,10 @@ interface Student {
       align-items: center;
     }
 
-    .student-modal {
+    .band-dialog {
       background: #ffffff;
       padding: 24px;
-      max-width: 600px;
+      max-width: 500px;
       width: 95%;
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -227,11 +195,9 @@ interface Student {
       width: 20px;
       height: 20px;
       line-height: 20px;
-      z-index: 1;
     }
 
-    .input-with-icon input,
-    .input-with-icon mat-select {
+    .input-with-icon input {
       width: 100%;
       padding: 12px 12px 12px 40px;
       border: 1px solid #e2e8f0;
@@ -241,8 +207,7 @@ interface Student {
       transition: all 0.2s ease;
     }
 
-    .input-with-icon input:focus,
-    .input-with-icon mat-select:focus {
+    .input-with-icon input:focus {
       border-color: #3182ce;
       box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
       outline: none;
@@ -282,7 +247,7 @@ interface Student {
     }
 
     @media (max-width: 600px) {
-      .student-modal {
+      .band-dialog {
         width: 90%;
         padding: 16px;
       }
@@ -297,59 +262,27 @@ interface Student {
     }
   `]
 })
-export class EditStudentModalComponent {
-  studentForm!: FormGroup;
-  departments = ['IT', 'Mechanics', 'Electrical'];
-  factories = ['Factory A', 'Factory B', 'Factory C'];
-  allBatches: string[] = ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'];
-  batches: string[] = this.allBatches;
-  stages: string[] = ['School', 'Institute', 'Faculty'];
-  isEdit: boolean;
+export class AddBandDialogComponent {
+  bandForm: FormGroup;
 
   constructor(
-    public dialogRef: MatDialogRef<EditStudentModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { student?: Student, isEdit: boolean },
+    public dialogRef: MatDialogRef<AddBandDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { student: Student },
     private fb: FormBuilder
   ) {
-    this.isEdit = data.isEdit;
-    this.initializeForm();
-
-    if (data.student) {
-      this.studentForm.patchValue(data.student);
-    }
-  }
-
-  initializeForm() {
-    this.studentForm = this.fb.group({
-      student: ['', [Validators.required, Validators.minLength(3)]],
-      stage: ['', Validators.required],
-      batch: ['', Validators.required],
-      department: ['', Validators.required],
-      factory: ['', Validators.required]
+    this.bandForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      value: [0, [Validators.required, Validators.min(0), Validators.max(10)]]
     });
   }
 
-  get filteredBatches(): string[] {
-    const stage = this.studentForm.get('stage')?.value;
-    switch (stage) {
-      case 'School': return ['Batch 1', 'Batch 2', 'Batch 3'];
-      case 'Institute': return ['Batch 1', 'Batch 2'];
-      case 'Faculty': return ['Batch 3', 'Batch 4'];
-      default: return this.allBatches;
+  onSubmit() {
+    if (this.bandForm.valid) {
+      this.dialogRef.close(this.bandForm.value);
     }
   }
 
-  onStageChange(stage: string) {
-    this.studentForm.patchValue({ batch: '' });
-  }
-
-  save() {
-    if (this.studentForm.valid) {
-      const studentData = this.studentForm.value;
-      if (this.isEdit && this.data.student) {
-        studentData.id = this.data.student.id;
-      }
-      this.dialogRef.close(studentData);
-    }
+  onCancel() {
+    this.dialogRef.close();
   }
 }

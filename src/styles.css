@@ -3,3 +3,23 @@ html, body {
 }
 
 /* You can add global styles to this file, and also import other style files */
+
+/* Dialog Styles */
+.centered-dialog {
+  position: relative;
+  margin: auto;
+}
+
+.dialog-backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mat-mdc-dialog-surface {
+  border-radius: 8px !important;
+}

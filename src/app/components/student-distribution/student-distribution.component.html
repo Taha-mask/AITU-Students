@@ -166,14 +166,17 @@
               <div class="mb-3">
                 <label for="factoryName" class="form-label">Factory Name</label>
                 <input type="text" class="form-control" id="factoryName" #factoryName placeholder="Enter factory name">
+                <div class="text-danger" *ngIf="nameError">{{nameError}}</div>
               </div>
               <div class="mb-3">
                 <label for="factoryAddress" class="form-label">Address</label>
                 <input type="text" class="form-control" id="factoryAddress" #factoryAddress placeholder="Enter address">
+                <div class="text-danger" *ngIf="addressError">{{addressError}}</div>
               </div>
               <div class="mb-3">
                 <label for="factoryPhone" class="form-label">Phone Number</label>
                 <input type="text" class="form-control" id="factoryPhone" #factoryPhone placeholder="Enter phone number">
+                <div class="text-danger" *ngIf="phoneError">{{phoneError}}</div>
               </div>
               <div class="mb-3">
                 <label for="factoryDepartment" class="form-label">Department</label>
@@ -181,6 +184,7 @@
                   <option value="" disabled selected>Select department</option>
                   <option *ngFor="let dept of departments.slice(1)" [value]="dept">{{dept}}</option>
                 </select>
+                <div class="text-danger" *ngIf="departmentError">{{departmentError}}</div>
               </div>
             </form>
           </div>
@@ -201,43 +205,63 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" *ngIf="selectedFactory">
-            <div class="mb-3">
-              <label class="form-label"><strong>Factory Name:</strong></label>
-              <p>{{selectedFactory.name}}</p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label"><strong>Address:</strong></label>
-              <p>{{selectedFactory.address || 'Not specified'}}</p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label"><strong>Phone:</strong></label>
-              <p>{{selectedFactory.phone || 'Not specified'}}</p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label"><strong>Department:</strong></label>
-              <p>{{selectedFactory.department || 'Not specified'}}</p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label"><strong>Capacity:</strong></label>
-              <p>{{selectedFactory.assignedStudents}} / {{selectedFactory.capacity}}</p>
-            </div>
-            <div class="mb-3">
-              <label class="form-label"><strong>Assigned Students:</strong></label>
-              <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let student of selectedFactory.students">
-                  {{student.name}} ({{student.department}} - {{student.stage}})
-                  <button class="btn btn-sm btn-outline-danger" (click)="removeFromFactory(student, $event)">
-                    <i class="bi bi-x"></i>
-                  </button>
-                </li>
-                <li class="list-group-item text-muted" *ngIf="selectedFactory.students.length === 0">
-                  No students assigned
-                </li>
-              </ul>
-            </div>
+            <form>
+              <div class="mb-3">
+                <label class="form-label"><strong>Factory Name:</strong></label>
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.name" name="factoryName" [readonly]="!isEditing">
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Address:</strong></label>
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.address" name="factoryAddress" [readonly]="!isEditing">
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Phone:</strong></label>
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.phone" name="factoryPhone" [readonly]="!isEditing">
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Department:</strong></label>
+                <select class="form-select" [(ngModel)]="selectedFactory.department" name="factoryDepartment" [disabled]="!isEditing">
+                  <option value="" disabled selected>Select department</option>
+                  <option *ngFor="let dept of departments.slice(1)" [value]="dept">{{dept}}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Capacity:</strong></label>
+                <input type="number" class="form-control" [(ngModel)]="selectedFactory.capacity" name="factoryCapacity" min="1" [readonly]="!isEditing">
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Type:</strong></label>
+                <select class="form-select" [(ngModel)]="selectedFactory.type" name="factoryType" [disabled]="!isEditing">
+                  <option *ngFor="let type of factoryTypes.slice(1)" [value]="type">{{type}}</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label"><strong>Assigned Students:</strong></label>
+                <ul class="list-group">
+                  <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let student of selectedFactory.students">
+                    {{student.name}} ({{student.department}} - {{student.stage}})
+                    <button class="btn btn-sm btn-outline-danger" (click)="removeFromFactory(student, $event)">
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </li>
+                  <li class="list-group-item text-muted" *ngIf="selectedFactory.students.length === 0">
+                    No students assigned
+                  </li>
+                </ul>
+              </div>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" *ngIf="!isEditing" (click)="startEditing()">
+              <i class="bi bi-pencil"></i> Edit
+            </button>
+            <button type="button" class="btn btn-success" *ngIf="isEditing" (click)="saveChanges()">
+              <i class="bi bi-check"></i> Save Changes
+            </button>
+            <button type="button" class="btn btn-secondary" *ngIf="isEditing" (click)="cancelEditing()">
+              <i class="bi bi-x"></i> Cancel
+            </button>
           </div>
         </div>
       </div>

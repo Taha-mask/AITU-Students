@@ -1,0 +1,162 @@
+<div class="modal-overlay" (click)="close()">
+  <div class="student-details-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Student Details</h2>
+      <button mat-icon-button (click)="close()">
+        </button>
+    </div>
+
+    <div class="modal-content">
+      <div class="student-info">
+        <div class="info-section">
+          <h3>Basic Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Name:</span>
+              <span class="value">{{ student.student }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Department:</span>
+              <span class="value">{{ student.department }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Factory:</span>
+              <span class="value">{{ student.factory }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Batch:</span>
+              <span class="value">{{ student.batch }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Stage:</span>
+              <span class="value">{{ student.stage }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Start Date:</span>
+              <span class="value">{{ student.date | date }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-section" *ngIf="!isLoading && student.progress !== undefined">
+          <h3>Progress & Performance</h3>
+          <div class="progress-grid">
+            <div class="progress-item">
+              <span class="label">Overall Progress</span>
+              <mat-progress-bar [value]="student.progress"
+                              [color]="getProgressColor(student.progress)">
+              </mat-progress-bar>
+              <span class="progress-value">{{ student.progress }}%</span>
+              <span class="status">{{ getPerformanceStatus(student.progress) }}</span>
+            </div>
+            <div class="progress-item">
+              <span class="label">Attendance</span>
+              <mat-progress-bar [value]="student.attendance"
+                              [color]="getProgressColor(student.attendance)">
+              </mat-progress-bar>
+              <span class="progress-value">{{ student.attendance }}%</span>
+            </div>
+          </div>
+          <div class="performance-grid" *ngIf="student.performance">
+            <div class="performance-item">
+              <span class="label">Technical Skills</span>
+              <mat-progress-bar [value]="student.performance.technical"
+                              [color]="getProgressColor(student.performance.technical)">
+              </mat-progress-bar>
+              <span class="progress-value">{{ student.performance.technical }}%</span>
+            </div>
+            <div class="performance-item">
+              <span class="label">Communication</span>
+              <mat-progress-bar [value]="student.performance.communication"
+                              [color]="getProgressColor(student.performance.communication)">
+              </mat-progress-bar>
+              <span class="progress-value">{{ student.performance.communication }}%</span>
+            </div>
+            <div class="performance-item">
+              <span class="label">Teamwork</span>
+              <mat-progress-bar [value]="student.performance.teamwork"
+                              [color]="getProgressColor(student.performance.teamwork)">
+              </mat-progress-bar>
+              <span class="progress-value">{{ student.performance.teamwork }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reports-section">
+          <h3>Reports</h3>
+          <div class="report-buttons">
+            <button mat-raised-button color="primary" (click)="openReport('progress')" [disabled]="isLoading">
+              <i class="bi bi-file-earmark-text"></i>
+
+            </button>
+            <button mat-raised-button color="accent" (click)="openReport('final')" [disabled]="isLoading">
+              <i class="bi bi-file-earmark-text"></i>
+              Final Report
+            </button>
+          </div>
+        </div>
+
+        <div class="evaluation-section" *ngIf="isSupervisor">
+          <h3>Capacity Evaluation</h3>
+          <form [formGroup]="evaluationForm" class="evaluation-form">
+            <div class="evaluation-grid">
+              <div class="evaluation-item">
+                <label>Technical Skills</label>
+                <input type="number" formControlName="technicalSkills" min="0" max="10">
+              </div>
+              <div class="evaluation-item">
+                <label>Communication</label>
+                <input type="number" formControlName="communication" min="0" max="10">
+              </div>
+              <div class="evaluation-item">
+                <label>Teamwork</label>
+                <input type="number" formControlName="teamwork" min="0" max="10">
+              </div>
+              <div class="evaluation-item">
+                <label>Problem Solving</label>
+                <input type="number" formControlName="problemSolving" min="0" max="10">
+              </div>
+              <div class="evaluation-item">
+                <label>Attendance</label>
+                <input type="number" formControlName="attendance" min="0" max="10">
+              </div>
+              <div class="add-band">
+                <button mat-raised-button color="accent" (click)="addNewBand()">
+                  <mat-icon>add</mat-icon>
+                  Add New Band
+                </button>
+              </div>
+            </div>
+
+            <div class="calculate-rating">
+              <button mat-raised-button color="primary" (click)="calculateOverallRating()">
+                <mat-icon>calculate</mat-icon>
+                Calculate Overall Rating
+              </button>
+            </div>
+
+            <div class="overall-rating">
+              <label>Overall Rating</label>
+              <div class="rating-value">
+                {{ evaluationForm.get('overallRating')?.value || 0 }}/10
+              </div>
+            </div>
+
+            <div class="comments-section">
+              <label>Comments</label>
+              <textarea formControlName="comments" rows="4" placeholder="Enter your evaluation comments..."></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button color="primary"
+                      (click)="submitEvaluation()"
+                      [disabled]="evaluationForm.invalid || isLoading">
+                Submit Evaluation
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

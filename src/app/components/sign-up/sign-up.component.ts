@@ -101,7 +101,7 @@ export class SignUpComponent {
       }
     }
     if (errors['mismatch']) return 'Passwords do not match';
-    
+
     return '';
   }
 }

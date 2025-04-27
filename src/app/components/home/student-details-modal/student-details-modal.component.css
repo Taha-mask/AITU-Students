@@ -1,0 +1,474 @@
+.student-details-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  padding: 24px;
+  max-width: 850px;
+  width: 95%;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #edf2f7;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1a202c;
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-header button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #4a5568;
+  transition: all 0.2s ease;
+}
+
+.modal-header button:hover {
+  background: #edf2f7;
+  transform: translateY(-1px);
+}
+
+.modal-header button i {
+  font-size: 1.25rem;
+  color: #4a5568;
+}
+
+.modal-content {
+  max-height: 82vh;
+  overflow-y: auto;
+}
+
+.student-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.info-section, .reports-section, .evaluation-section, .progress-section {
+  background: #f7fafc;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+h3 {
+  color: #1a202c;
+  margin: 0 0 16px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+h3 mat-icon {
+  color: #3182ce;
+  font-size: 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.value {
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Progress Section Styles */
+.progress-grid, .performance-grid {
+  display: grid;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.progress-item, .performance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.progress-value {
+  color: #2d3748;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.status {
+  color: #718096;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+mat-progress-bar {
+  height: 10px;
+  border-radius: 5px;
+}
+
+/* Reports Section Styles */
+.report-buttons {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.report-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: #3182ce;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.report-buttons button mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.report-buttons button:hover:not(:disabled) {
+  background: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+.report-buttons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Evaluation Section Styles */
+.evaluation-section {
+  background: #f7fafc;
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+.evaluation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.evaluation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.evaluation-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evaluation-item label {
+  color: #2d3748;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.evaluation-item input {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  width: 100%;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+.evaluation-item input:focus {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+  outline: none;
+}
+
+.evaluation-item input::-webkit-inner-spin-button,
+.evaluation-item input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.overall-rating {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 12px;
+}
+
+.overall-rating label {
+  color: #718096;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.rating-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #3182ce;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.rating-value span {
+  font-size: 1.1rem;
+  color: #718096;
+}
+
+.comments-section {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comments-section label {
+  color: #2d3748;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.comments-section textarea {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 140px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: #2d3748;
+}
+
+.comments-section textarea:focus {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.form-actions button {
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  background: #3182ce;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-actions button mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.form-actions button:hover:not(:disabled) {
+  background: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+.form-actions button:disabled {
+  background: #e2e8f0;
+  cursor: not-allowed;
+}
+
+/* Loading State */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .evaluation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .report-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-header {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .progress-grid, .performance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .evaluation-section {
+    padding: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.calculate-rating {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.calculate-rating button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calculate-rating button:hover {
+  background: #2b6cb0;
+  transform: translateY(-1px);
+}
+
+.calculate-rating button mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.add-band {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.add-band button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #38a169;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-band button:hover {
+  background: #2f855a;
+  transform: translateY(-1px);
+}
+
+.add-band button mat-icon {
+  font-size: 1.25rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}

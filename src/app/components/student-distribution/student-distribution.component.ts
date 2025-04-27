@@ -42,6 +42,14 @@ export class StudentDistributionComponent implements OnInit {
 
   factoryTypes: string[] = ['All', 'Internal', 'External'];
   selectedFactoryType: string = 'All';
+  isEditing: boolean = false;
+  originalFactoryData: Factory | null = null;
+
+  // Error messages
+  nameError: string = '';
+  addressError: string = '';
+  phoneError: string = '';
+  departmentError: string = '';
 
   constructor(public translationService: TranslationService) {}
 
@@ -106,10 +114,50 @@ export class StudentDistributionComponent implements OnInit {
 
   openFactoryDetails(factory: Factory): void {
     this.selectedFactory = factory;
+    this.isEditing = false;
+    this.originalFactoryData = { ...factory };
     const modalElement = document.getElementById('factoryDetailsModal');
     if (modalElement) {
       const modal = new bootstrap.Modal(modalElement);
       modal.show();
+    }
+  }
+
+  startEditing(): void {
+    this.isEditing = true;
+  }
+
+  cancelEditing(): void {
+    if (this.selectedFactory && this.originalFactoryData) {
+      Object.assign(this.selectedFactory, this.originalFactoryData);
+    }
+    this.isEditing = false;
+  }
+
+  saveChanges(): void {
+    if (this.selectedFactory) {
+      if (confirm('Are you sure you want to save these changes?')) {
+        const index = this.factories.findIndex(f => f.id === this.selectedFactory?.id);
+        if (index !== -1) {
+          this.factories[index] = { ...this.factories[index], ...this.selectedFactory };
+          this.isEditing = false;
+          // Close the modal properly
+          const modalElement = document.getElementById('factoryDetailsModal');
+          if (modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+              modal.hide();
+              // Remove the modal backdrop
+              document.body.classList.remove('modal-open');
+              const backdrop = document.querySelector('.modal-backdrop');
+              if (backdrop) {
+                backdrop.remove();
+              }
+            }
+          }
+          alert('Changes saved successfully');
+        }
+      }
     }
   }
 
@@ -214,18 +262,72 @@ export class StudentDistributionComponent implements OnInit {
   }
 
   addFactory(name: string, address: string, phone: string, department: string): void {
+    // Reset error messages
+    this.nameError = '';
+    this.addressError = '';
+    this.phoneError = '';
+    this.departmentError = '';
+
+    let hasError = false;
+
+    // Name validation
+    if (!name || name.trim().length < 3) {
+      this.nameError = 'Factory name must be at least 3 characters long';
+      hasError = true;
+    }
+
+    // Address validation
+    if (!address || address.trim().length < 5) {
+      this.addressError = 'Address must be at least 5 characters long';
+      hasError = true;
+    }
+
+    // Phone validation
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!phone || !phoneRegex.test(phone)) {
+      this.phoneError = 'Phone number must contain only numbers (10-15 digits)';
+      hasError = true;
+    }
+
+    // Department validation
+    if (!department || department === '') {
+      this.departmentError = 'Please select a department';
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
+
     const newFactory: Factory = {
       id: this.factories.length + 1,
-      name,
+      name: name.trim(),
       capacity: 5,
       assignedStudents: 0,
       students: [],
-      address,
-      phone,
+      address: address.trim(),
+      phone: phone.trim(),
       department,
       type: 'Internal'
     };
     this.factories.push(newFactory);
     this.factoryDropLists = this.factories.map(f => `factory-${f.id}`);
+
+    // Close the modal properly
+    const modalElement = document.getElementById('addFactoryModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+        // Remove the modal backdrop
+        document.body.classList.remove('modal-open');
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+          backdrop.remove();
+        }
+      }
+    }
+
+    alert('Factory added successfully');
   }
 }

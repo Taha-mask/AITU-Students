@@ -62,6 +62,7 @@ const translations = {
     month: 'Month',
     year: 'Year',
     day: 'Day',
+    reset: 'Reset',
   },
   ar: {
     // Navigation
@@ -123,10 +124,11 @@ const translations = {
     month: 'شهر',
     year: 'سنة',
     day: 'يوم',
+    reset: 'إعادة تعيين',
   }
 } as const;
 
-type TranslationKeys = keyof typeof translations.en | 'year';
+type TranslationKeys = keyof typeof translations.en | 'year' | 'reset';
 
 @Injectable({
   providedIn: 'root'

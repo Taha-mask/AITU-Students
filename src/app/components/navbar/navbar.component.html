@@ -12,7 +12,7 @@
       <div class="icon-btn" [class.has-notifications]="hasNotifications" (click)="toggleNotifications()">
         <i class="bi bi-bell"></i>
         <span class="notification-badge" *ngIf="notificationCount > 0">{{notificationCount}}</span>
-        
+
         <!-- Notifications Dropdown -->
         <div class="notifications-dropdown" *ngIf="showNotifications">
           <div class="notification-header">
@@ -53,30 +53,13 @@
       </div>
 
       <!-- User Profile -->
-      <div class="user-profile" *ngFor="let adm of admin" (click)="toggleUserMenu()">
-        <div class="user-info" >
+      <div class="user-profile" *ngFor="let adm of admin">
+        <div class="user-info">
           <div class="user-name">{{adm.name}}</div>
           <div class="user-role">{{adm.types[0]}}</div>
         </div>
         <div class="avatar-container">
           <img [src]="adm.image" alt="User Avatar" class="avatar">
-        </div>
-
-        <!-- User Menu Dropdown -->
-        <div class="user-dropdown" *ngIf="showUserMenu">
-          <a class="dropdown-item" routerLink="/profile">
-            <i class="bi bi-person"></i>
-            <span>{{ translationService.translate('profile') }}</span>
-          </a>
-          <a class="dropdown-item" routerLink="/settings">
-            <i class="bi bi-gear"></i>
-            <span>{{ translationService.translate('settings') }}</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>{{ translationService.translate('logout')  }}</span>
-          </a>
         </div>
       </div>
     </div>

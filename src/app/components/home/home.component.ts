@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule, Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../services/auth.service';
 import { EditStudentModalComponent } from './edit-student-modal/edit-student-modal.component';
+import { StudentDetailsModalComponent } from './student-details-modal/student-details-modal.component';
+import { AddBandDialogComponent } from './add-band-dialog/add-band-dialog.component';
 
 interface Student {
   id: number;
@@ -18,7 +22,7 @@ interface Student {
   selected: boolean;
 }
 
-export type TranslationKeys = 'dashboard' | 'students_distribution' | 'analytics' | 'settings' | 'student' | 'filters' | 'sort' | 'export' | 'add_student' | 'total_students' | 'departments' | 'active' | 'growth' | 'sort_by' | 'department' | 'factory' | 'batch' | 'stage' | 'year' | 'month' | 'department_distribution' | 'showing' | 'to' | 'of' | 'entries' | 'per_page_5' | 'per_page_10' | 'per_page_20';
+export type TranslationKeys = 'dashboard' | 'students_distribution' | 'analytics' | 'settings' | 'student' | 'filters' | 'sort' | 'export' | 'add_student' | 'total_students' | 'departments' | 'active' | 'growth' | 'sort_by' | 'department' | 'factory' | 'batch' | 'stage' | 'year' | 'month' | 'department_distribution' | 'showing' | 'to' | 'of' | 'entries' | 'per_page_5' | 'per_page_10' | 'per_page_20' | 'reset';
 
 @Component({
   selector: 'app-home',
@@ -27,27 +31,28 @@ export type TranslationKeys = 'dashboard' | 'students_distribution' | 'analytics
     CommonModule,
     FormsModule,
     MatDialogModule,
+    MatIconModule,
     RouterModule,
     NavbarComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   Math = Math;
   isSidebarOpen = true;
   students: Student[] = [
     { id: 1, student: 'Samanta William', department: 'Engineering', factory: 'Factory A', batch: 'Batch 1', stage: 'School', date: new Date(2021, 2, 26), selected: false },
-    { id: 2, student: 'Tony Soap', department: 'Science', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 2, 15), selected: false },
-    { id: 3, student: 'Karen Hope', department: 'Arts', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 1, 10), selected: false },
-    { id: 4, student: 'Jordan Nico', department: 'Engineering', factory: 'Factory A', batch: 'Batch 1', stage: 'School', date: new Date(2021, 2, 5), selected: false },
-    { id: 5, student: 'Nadila Adja', department: 'Science', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 1, 20), selected: false },
-    { id: 6, student: 'Johnny Ahmad', department: 'Arts', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 0, 15), selected: false }
+    { id: 2, student: 'Tony Soap', department: 'Electrical', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 2, 15), selected: false },
+    { id: 3, student: 'Karen Hope', department: 'Mechanics', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 1, 10), selected: false },
+    { id: 4, student: 'Jordan Nico', department: 'IT', factory: 'Factory A', batch: 'Batch 1', stage: 'School', date: new Date(2021, 2, 5), selected: false },
+    { id: 5, student: 'Nadila Adja', department: 'Mechanics', factory: 'Factory B', batch: 'Batch 2', stage: 'Institute', date: new Date(2021, 1, 20), selected: false },
+    { id: 6, student: 'Johnny Ahmad', department: 'Electrical', factory: 'Factory C', batch: 'Batch 3', stage: 'Faculty', date: new Date(2021, 0, 15), selected: false }
   ];
 
   filteredStudents: Student[] = [...this.students];
   searchTerm: string = '';
-  departments: string[] = ['Engineering', 'Science', 'Arts'];
+  departments: string[] = ['IT', 'Mechanics', 'Electrical'];
   factories: string[] = ['Factory A', 'Factory B', 'Factory C'];
   allBatches: string[] = ['Batch 1', 'Batch 2', 'Batch 3', 'Batch 4'];
   batches: string[] = this.allBatches;
@@ -94,9 +99,15 @@ export class HomeComponent {
 
   constructor(
     public translationService: TranslationService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
+    private authService: AuthService
   ) {
     this.totalStudents = this.students.length;
+  }
+
+  ngOnInit(): void {
+    // Additional initialization logic if needed
   }
 
   get totalPages(): number {
@@ -290,5 +301,46 @@ export class HomeComponent {
       case 'Faculty': return ['Batch 3', 'Batch 4'];
       default: return this.allBatches;
     }
+  }
+
+  // Reset all filters
+  resetFilters() {
+    this.selectedDepartment = '';
+    this.selectedFactory = '';
+    this.selectedBatch = '';
+    this.selectedStage = '';
+    this.selectedYear = '';
+    this.selectedMonth = '';
+    this.selectedDay = '';
+    this.searchTerm = '';
+    this.applyFilters();
+  }
+
+  logout(): void {
+    this.authService.logout();
+  }
+
+  viewStudentDetails(student: Student) {
+    this.dialog.open(StudentDetailsModalComponent, {
+      width: '800px',
+      data: { student }
+    });
+  }
+
+  openAddBandDialog(student: Student) {
+    const dialogRef = this.dialog.open(AddBandDialogComponent, {
+      width: '400px',
+      data: { student },
+      panelClass: 'centered-dialog',
+      hasBackdrop: true,
+      backdropClass: 'dialog-backdrop'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('New band added:', result);
+        // Handle the new band data here
+      }
+    });
   }
 }

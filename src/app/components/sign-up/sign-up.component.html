@@ -1,44 +1,50 @@
 <div class="signup-container">
   <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form">
     <h2>Sign Up</h2>
-    
+
     <div class="form-group">
-      <input type="text" formControlName="firstName" placeholder="First Name" required>
+      <label for="firstName">First Name</label>
+      <input id="firstName" type="text" formControlName="firstName" placeholder="First Name" required>
       <div class="error-message" *ngIf="f['firstName'].touched && f['firstName'].invalid">
         {{ getErrorMessage('firstName') }}
       </div>
     </div>
 
     <div class="form-group">
-      <input type="text" formControlName="lastName" placeholder="Last Name" required>
+      <label for="lastName">Last Name</label>
+      <input id="lastName" type="text" formControlName="lastName" placeholder="Last Name" required>
       <div class="error-message" *ngIf="f['lastName'].touched && f['lastName'].invalid">
         {{ getErrorMessage('lastName') }}
       </div>
     </div>
 
     <div class="form-group">
-      <input type="email" formControlName="email" placeholder="Email" required>
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="Email" required>
       <div class="error-message" *ngIf="f['email'].touched && f['email'].invalid">
         {{ getErrorMessage('email') }}
       </div>
     </div>
 
     <div class="form-group">
-      <input type="tel" formControlName="phone" placeholder="Phone Number (11 digits)" required>
+      <label for="phone">Phone Number (11 digits)</label>
+      <input id="phone" type="tel" formControlName="phone" placeholder="Phone Number (11 digits)" required>
       <div class="error-message" *ngIf="f['phone'].touched && f['phone'].invalid">
         {{ getErrorMessage('phone') }}
       </div>
     </div>
 
     <div class="form-group">
-      <input type="password" formControlName="password" placeholder="Password" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="Password" required>
       <div class="error-message" *ngIf="f['password'].touched && f['password'].invalid">
         {{ getErrorMessage('password') }}
       </div>
     </div>
 
     <div class="form-group">
-      <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
+      <label for="confirmPassword">Confirm Password</label>
+      <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
       <div class="error-message" *ngIf="f['confirmPassword'].touched && (f['confirmPassword'].invalid || signupForm.hasError('mismatch'))">
         {{ getErrorMessage('confirmPassword') }}
       </div>
@@ -68,7 +74,7 @@
     <div class="error-message text-center" *ngIf="error">{{ error }}</div>
 
     <p class="login-link">
-      Already have an account? 
+      Already have an account?
       <a href="javascript:void(0)" (click)="goToLogin()">Login</a>
     </p>
   </form>
