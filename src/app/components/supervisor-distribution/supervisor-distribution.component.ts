@@ -497,4 +497,13 @@ export class SupervisorDistributionComponent implements OnInit {
       this.newIndustry = '';
     }
   }
+
+  toggleEdit() {
+    this.isEditing = !this.isEditing;
+  }
+
+  saveSupervisorChanges() {
+    // Save changes logic here
+    this.isEditing = false;
+  }
 }

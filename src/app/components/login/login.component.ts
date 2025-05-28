@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/firebase.service';
 import { Student } from '../../interfaces/student';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
     selector: 'app-login',
@@ -30,7 +31,7 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private fb: FormBuilder,
-
+    public translationService: TranslationService
   ) {
     // Redirect if already logged in
     if (this.authService.isAuthenticated()) {

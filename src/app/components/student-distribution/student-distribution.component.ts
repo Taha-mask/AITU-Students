@@ -35,8 +35,8 @@ interface Factory {
 export class StudentDistributionComponent implements OnInit {
   @ViewChildren(CdkDropList) dropLists!: QueryList<CdkDropList>;
 
-  factoryTypes: string[] = ['All', 'Internal', 'External'];
-  selectedFactoryType: string = 'All';
+  factoryTypes: string[] = ['Internal', 'External'];
+  selectedFactoryType: string = '';
   isEditing: boolean = false;
   originalFactoryData: Factory | null = null;
 
@@ -62,9 +62,9 @@ export class StudentDistributionComponent implements OnInit {
   departments: string[] = [];
   stages: string[] = [];
   batches: string[] = [];
-  selectedDepartment: string = 'All';
-  selectedStage: string = 'All';
-  selectedBatch: string = 'All';
+  selectedDepartment: string = '';
+  selectedStage: string = '';
+  selectedBatch: string = '';
   searchTerm: string = '';
   factorySearchTerm: string = '';
   selectAll: boolean = false;

@@ -1,34 +1,25 @@
-<div class="login-container">
+<div class="login-container" [dir]="(translationService.currentLang$ | async) === 'ar' ? 'rtl' : 'ltr'">
   <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h2>Login</h2>
+    <h2>{{ translationService.translate('login') }}</h2>
 
     <div class="form-group">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        formControlName="email"
-        placeholder="Enter your email"
-        [ngClass]="{'is-invalid': f['email'].touched && f['email'].errors}"
-      >
+      <label for="email">{{ translationService.translate('email') }}</label>
+      <input type="email" id="email" formControlName="email" [placeholder]="translationService.translate('enter_email')"
+        [ngClass]="{'is-invalid': f['email'].touched && f['email'].errors}">
       <div *ngIf="f['email'].touched && f['email'].errors" class="error-message">
-        <span *ngIf="f['email'].errors['required']">Email is required</span>
-        <span *ngIf="f['email'].errors['email']">Please enter a valid email</span>
+        <span *ngIf="f['email'].errors['required']">{{ translationService.translate('email_required') }}</span>
+        <span *ngIf="f['email'].errors['email']">{{ translationService.translate('invalid_email') }}</span>
       </div>
     </div>
 
     <div class="form-group">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        placeholder="Enter your password"
-        [ngClass]="{'is-invalid': f['password'].touched && f['password'].errors}"
-      >
+      <label for="password">{{ translationService.translate('password') }}</label>
+      <input type="password" id="password" formControlName="password"
+        [placeholder]="translationService.translate('enter_password')"
+        [ngClass]="{'is-invalid': f['password'].touched && f['password'].errors}">
       <div *ngIf="f['password'].touched && f['password'].errors" class="error-message">
-        <span *ngIf="f['password'].errors['required']">Password is required</span>
-        <span *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</span>
+        <span *ngIf="f['password'].errors['required']">{{ translationService.translate('password_required') }}</span>
+        <span *ngIf="f['password'].errors['minlength']">{{ translationService.translate('password_min_length') }}</span>
       </div>
     </div>
 
@@ -36,18 +27,13 @@
       {{ error }}
     </div>
 
-    <button
-      type="submit"
-      class="btn-login"
-      [disabled]="loginForm.invalid || loading"
-      [ngClass]="{'loading': loading}"
-    >
-      {{ loading ? 'Logging in...' : 'Login' }}
+    <button type="submit" class="btn-login" [disabled]="loginForm.invalid || loading" [ngClass]="{'loading': loading}">
+      {{ loading ? translationService.translate('logging_in') : translationService.translate('login') }}
     </button>
 
     <p class="signup-link">
-      Don't have an account?
-      <a href="javascript:void(0)" (click)="goToSignUp()">Sign Up</a>
+      {{ translationService.translate('no_account') }}
+      <a href="javascript:void(0)" (click)="goToSignUp()">{{ translationService.translate('sign_up') }}</a>
     </p>
   </form>
 </div>

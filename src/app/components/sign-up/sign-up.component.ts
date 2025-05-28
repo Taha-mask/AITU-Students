@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/firebase.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
     selector: 'app-sign-up',
@@ -18,7 +19,8 @@ export class SignUpComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public translationService: TranslationService
   ) {
     // Redirect if already logged in
     if (this.authService.isAuthenticated()) {

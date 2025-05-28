@@ -12,11 +12,8 @@
       <div class="filters">
         <div class="search-box">
           <i class="bi bi-search"></i>
-          <input
-            type="text"
-            [(ngModel)]="searchTerm"
-            placeholder="{{ translationService.translate('search_students') }}"
-          >
+          <input type="text" [(ngModel)]="searchTerm"
+            placeholder="{{ translationService.translate('search_students') }}">
         </div>
         <div class="add-factory-button">
           <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFactoryModal">
@@ -24,25 +21,31 @@
           </button>
         </div>
         <select [(ngModel)]="selectedDepartment">
+          <option value="">{{ translationService.translate('all_departments') }}</option>
           <option *ngFor="let dept of departments" [value]="dept">
-            {{dept}} Department
+            {{ translationService.translate(dept) }}
           </option>
         </select>
 
         <select [(ngModel)]="selectedStage">
+          <option value="">{{ translationService.translate('all_stages') }}</option>
           <option *ngFor="let stage of stages" [value]="stage">
-            {{stage}} Stage
+            {{ translationService.translate(stage) }}
           </option>
         </select>
 
         <select [(ngModel)]="selectedBatch">
+          <option value="">{{ translationService.translate('all_batches') }}</option>
           <option *ngFor="let batch of batches" [value]="batch">
-            {{batch}} Batch
+            {{ translationService.translate(batch) }}
           </option>
         </select>
 
         <select [(ngModel)]="selectedFactoryType">
-          <option *ngFor="let type of factoryTypes" [value]="type">{{type}} Factories</option>
+          <option value="">{{ translationService.translate('all_factories') }}</option>
+          <option *ngFor="let type of factoryTypes" [value]="type">
+            {{ translationService.translate(type) }}
+          </option>
         </select>
       </div>
     </div>
@@ -56,9 +59,7 @@
         <h3>{{ translationService.translate('students') }} ({{filteredStudents.length}})</h3>
         <div class="selection-controls">
           <label class="select-all-checkbox">
-            <input type="checkbox"
-                   [checked]="selectAll"
-                   (change)="toggleSelectAll()">
+            <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()">
             <span>{{ translationService.translate('select_all') }}</span>
           </label>
           <div class="selection-info" *ngIf="selectedStudents.length > 0">
@@ -67,21 +68,12 @@
         </div>
       </div>
 
-      <div class="students-container"
-           cdkDropList
-           #studentList="cdkDropList"
-           [cdkDropListData]="filteredStudents"
-           [cdkDropListConnectedTo]="factoryDropLists"
-           (cdkDropListDropped)="onDrop($event)">
-        <div class="student-card"
-             *ngFor="let student of filteredStudents"
-             cdkDrag
-             [cdkDragData]="student"
-             [class.selected]="student.selected">
+      <div class="students-container" cdkDropList #studentList="cdkDropList" [cdkDropListData]="filteredStudents"
+        [cdkDropListConnectedTo]="factoryDropLists" (cdkDropListDropped)="onDrop($event)">
+        <div class="student-card" *ngFor="let student of filteredStudents" cdkDrag [cdkDragData]="student"
+          [class.selected]="student.selected">
           <div class="checkbox-wrapper">
-            <input type="checkbox"
-                   [checked]="student.selected"
-                   (click)="toggleSelection($event, student)">
+            <input type="checkbox" [checked]="student.selected" (click)="toggleSelection($event, student)">
           </div>
           <div class="student-info" (click)="toggleSelection($event, student)">
             <h4>{{student.name}}</h4>
@@ -105,25 +97,19 @@
         <h3>{{ translationService.translate('factories') }}</h3>
         <div class="factory-search">
           <i class="bi bi-search"></i>
-          <input
-            type="text"
-            [(ngModel)]="factorySearchTerm"
-            placeholder="{{ translationService.translate('search_factories') }}"
-          >
+          <input type="text" [(ngModel)]="factorySearchTerm"
+            placeholder="{{ translationService.translate('search_factories') }}">
         </div>
       </div>
       <div class="factories-grid">
         <div class="factory-card" *ngFor="let factory of filteredFactories"
-             [class.full]="factory.assignedStudents >= factory.capacity"
-             (click)="openFactoryDetails(factory)">
+          [class.full]="factory.assignedStudents >= factory.capacity" (click)="openFactoryDetails(factory)">
           <div class="factory-header">
             <h3>{{ factory.name }}</h3>
             <span class="capacity">{{ factory.assignedStudents }}/{{ factory.capacity }}</span>
           </div>
           <div class="progress-bar">
-            <div class="progress"
-                 [style.width.%]="(factory.assignedStudents / factory.capacity) * 100"
-                 [ngClass]="{
+            <div class="progress" [style.width.%]="(factory.assignedStudents / factory.capacity) * 100" [ngClass]="{
                    'empty': factory.assignedStudents === 0,
                    'low': factory.assignedStudents > 0 && factory.assignedStudents < factory.capacity * 0.5,
                    'medium': factory.assignedStudents >= factory.capacity * 0.5 && factory.assignedStudents < factory.capacity * 0.8,
@@ -131,12 +117,8 @@
                  }">
             </div>
           </div>
-          <div class="factory-students"
-               cdkDropList
-               [id]="'factory-' + factory.id"
-               [cdkDropListData]="factory.students"
-               [cdkDropListConnectedTo]="[studentList]"
-               (cdkDropListDropped)="onDrop($event, factory)">
+          <div class="factory-students" cdkDropList [id]="'factory-' + factory.id" [cdkDropListData]="factory.students"
+            [cdkDropListConnectedTo]="[studentList]" (cdkDropListDropped)="onDrop($event, factory)">
             <div class="dropzone-content" *ngIf="factory.students.length === 0">
               <i class="bi bi-plus-circle"></i>
               <span *ngIf="factory.assignedStudents < factory.capacity">
@@ -161,7 +143,8 @@
     </div>
 
     <!-- Add Factory Modal -->
-    <div class="modal fade" id="addFactoryModal" tabindex="-1" aria-labelledby="addFactoryModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addFactoryModal" tabindex="-1" aria-labelledby="addFactoryModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -172,22 +155,27 @@
             <form>
               <div class="mb-3">
                 <label for="factoryName" class="form-label">{{ translationService.translate('factory_name') }}</label>
-                <input type="text" class="form-control" id="factoryName" #factoryName placeholder="{{ translationService.translate('enter_factory_name') }}">
+                <input type="text" class="form-control" id="factoryName" #factoryName
+                  placeholder="{{ translationService.translate('enter_factory_name') }}">
                 <div class="text-danger" *ngIf="nameError">{{nameError}}</div>
               </div>
               <div class="mb-3">
                 <label for="factoryAddress" class="form-label">{{ translationService.translate('address') }}</label>
-                <input type="text" class="form-control" id="factoryAddress" #factoryAddress placeholder="{{ translationService.translate('enter_address') }}">
+                <input type="text" class="form-control" id="factoryAddress" #factoryAddress
+                  placeholder="{{ translationService.translate('enter_address') }}">
                 <div class="text-danger" *ngIf="addressError">{{addressError}}</div>
               </div>
               <div class="mb-3">
                 <label for="factoryPhone" class="form-label">{{ translationService.translate('phone') }}</label>
-                <input type="text" class="form-control" id="factoryPhone" #factoryPhone placeholder="{{ translationService.translate('enter_phone') }}">
+                <input type="text" class="form-control" id="factoryPhone" #factoryPhone
+                  placeholder="{{ translationService.translate('enter_phone') }}">
                 <div class="text-danger" *ngIf="phoneError">{{phoneError}}</div>
               </div>
               <div class="mb-3">
-                <label for="factoryContactName" class="form-label">{{ translationService.translate('contact_name') }}</label>
-                <input type="text" class="form-control" id="factoryContactName" #factoryContactName placeholder="{{ translationService.translate('enter_contact_name') }}">
+                <label for="factoryContactName" class="form-label">{{ translationService.translate('contact_name')
+                  }}</label>
+                <input type="text" class="form-control" id="factoryContactName" #factoryContactName
+                  placeholder="{{ translationService.translate('enter_contact_name') }}">
                 <div class="text-danger" *ngIf="contactNameError">{{contactNameError}}</div>
               </div>
               <div class="mb-3">
@@ -197,7 +185,8 @@
                     <option value="" disabled selected>{{ translationService.translate('select_industry') }}</option>
                     <option *ngFor="let industry of industries" [value]="industry">{{industry}}</option>
                   </select>
-                  <input type="text" class="form-control" placeholder="Add new industry" [(ngModel)]="newIndustry" name="newIndustry">
+                  <input type="text" class="form-control" placeholder="Add new industry" [(ngModel)]="newIndustry"
+                    name="newIndustry">
                   <button class="btn btn-outline-secondary" type="button" (click)="addNewIndustry()">
                     <i class="bi bi-plus"></i> Add
                   </button>
@@ -206,7 +195,8 @@
               </div>
               <div class="mb-3">
                 <label for="factoryCapacity" class="form-label">{{ translationService.translate('capacity') }}</label>
-                <input type="number" class="form-control" id="factoryCapacity" #factoryCapacity placeholder="{{ translationService.translate('enter_capacity') }}" min="1">
+                <input type="number" class="form-control" id="factoryCapacity" #factoryCapacity
+                  placeholder="{{ translationService.translate('enter_capacity') }}" min="1">
               </div>
               <div class="mb-3">
                 <label for="factoryType" class="form-label">{{ translationService.translate('type') }}</label>
@@ -218,66 +208,81 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ translationService.translate('cancel') }}</button>
-            <button type="button" class="btn btn-primary" (click)="addFactory(factoryName.value, factoryAddress.value, factoryPhone.value, factoryContactName.value, factoryIndustry.value, +factoryCapacity.value, factoryType.value)" data-bs-dismiss="modal">{{ translationService.translate('save') }}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{
+              translationService.translate('cancel') }}</button>
+            <button type="button" class="btn btn-primary"
+              (click)="addFactory(factoryName.value, factoryAddress.value, factoryPhone.value, factoryContactName.value, factoryIndustry.value, +factoryCapacity.value, factoryType.value)"
+              data-bs-dismiss="modal">{{ translationService.translate('save') }}</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Factory Details Modal -->
-    <div class="modal fade" id="factoryDetailsModal" tabindex="-1" aria-labelledby="factoryDetailsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="factoryDetailsModal" tabindex="-1" aria-labelledby="factoryDetailsModalLabel"
+      aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="factoryDetailsModalLabel">{{ translationService.translate('factory_details') }}</h5>
+            <h5 class="modal-title" id="factoryDetailsModalLabel">{{ translationService.translate('factory_details') }}
+            </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" *ngIf="selectedFactory">
             <form>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('name') }}:</strong></label>
-                <input type="text" class="form-control" [(ngModel)]="selectedFactory.name" name="factoryName" [readonly]="!isEditing">
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.name" name="factoryName"
+                  [readonly]="!isEditing">
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('address') }}:</strong></label>
-                <input type="text" class="form-control" [(ngModel)]="selectedFactory.address" name="factoryAddress" [readonly]="!isEditing">
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.address" name="factoryAddress"
+                  [readonly]="!isEditing">
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('phone') }}:</strong></label>
-                <input type="text" class="form-control" [(ngModel)]="selectedFactory.phone" name="factoryPhone" [readonly]="!isEditing">
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.phone" name="factoryPhone"
+                  [readonly]="!isEditing">
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('contact_name') }}:</strong></label>
-                <input type="text" class="form-control" [(ngModel)]="selectedFactory.contactName" name="factoryContactName" [readonly]="!isEditing">
+                <input type="text" class="form-control" [(ngModel)]="selectedFactory.contactName"
+                  name="factoryContactName" [readonly]="!isEditing">
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('industry') }}:</strong></label>
                 <div class="input-group">
-                  <select class="form-select" [(ngModel)]="selectedFactory.industry" name="factoryIndustry" [disabled]="!isEditing">
+                  <select class="form-select" [(ngModel)]="selectedFactory.industry" name="factoryIndustry"
+                    [disabled]="!isEditing">
                     <option value="" disabled selected>{{ translationService.translate('select_industry') }}</option>
                     <option *ngFor="let industry of industries" [value]="industry">{{industry}}</option>
                   </select>
-                  <input type="text" class="form-control" placeholder="Add new industry" [(ngModel)]="newIndustry" name="newIndustry" [disabled]="!isEditing">
-                  <button class="btn btn-outline-secondary" type="button" (click)="addNewIndustry()" [disabled]="!isEditing">
+                  <input type="text" class="form-control" placeholder="Add new industry" [(ngModel)]="newIndustry"
+                    name="newIndustry" [disabled]="!isEditing">
+                  <button class="btn btn-outline-secondary" type="button" (click)="addNewIndustry()"
+                    [disabled]="!isEditing">
                     <i class="bi bi-plus"></i> Add
                   </button>
                 </div>
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('capacity') }}:</strong></label>
-                <input type="number" class="form-control" [(ngModel)]="selectedFactory.capacity" name="factoryCapacity" min="1" [readonly]="!isEditing">
+                <input type="number" class="form-control" [(ngModel)]="selectedFactory.capacity" name="factoryCapacity"
+                  min="1" [readonly]="!isEditing">
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>{{ translationService.translate('type') }}:</strong></label>
-                <select class="form-select" [(ngModel)]="selectedFactory.type" name="factoryType" [disabled]="!isEditing">
+                <select class="form-select" [(ngModel)]="selectedFactory.type" name="factoryType"
+                  [disabled]="!isEditing">
                   <option *ngFor="let type of factoryTypes.slice(1)" [value]="type">{{type}}</option>
                 </select>
               </div>
               <div class="mb-3">
                 <label class="form-label"><strong>Assigned Students:</strong></label>
                 <ul class="list-group">
-                  <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let student of selectedFactory.students">
+                  <li class="list-group-item d-flex justify-content-between align-items-center"
+                    *ngFor="let student of selectedFactory.students">
                     {{student.name}} ({{student.department}} - {{student.stage}})
                     <button class="btn btn-sm btn-outline-danger" (click)="removeFromFactory(student, $event)">
                       <i class="bi bi-x"></i>

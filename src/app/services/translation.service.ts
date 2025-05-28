@@ -38,6 +38,11 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     sort: 'Sort',
     sort_by: 'Sort by',
     all: 'All',
+    all_departments: 'All Departments',
+    all_stages: 'All Stages',
+    all_batches: 'All Batches',
+    all_factories: 'All Factories',
+    all_supervisors: 'All Supervisors',
 
     // Actions
     export: 'Export',
@@ -110,23 +115,49 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     required_field: 'This field is required',
     invalid_phone: 'Invalid phone number format',
     invalid_capacity: 'Capacity must be a positive number',
-    //departments
-    electrical: 'Electrical',
-    mechanics: 'Mechanics',
-    information_technology: 'Information Technology',
-    // Comparison
-    vs: 'vs',
 
-    // Batch names
-    batch_1: 'Batch 1',
-    batch_2: 'Batch 2',
-    batch_3: 'Batch 3',
-    batch_4: 'Batch 4',
+    // Department names
+    Electrical: 'Electrical',
+    Mechanics: 'Mechanics',
+    'Information Technology': 'Information Technology',
+    'Electrical Technology': 'Electrical Technology',
+    'كهرباء': 'Electrical',
+    'ميكانيكا': 'Mechanics',
+    'تكنولوجيا المعلومات': 'Information Technology',
+    'تكنولوجيا كهربائية': 'Electrical Technology',
 
     // Stage names
-    school: 'School',
-    institute: 'Institute',
-    faculty: 'Faculty',
+    School: 'School',
+    Institute: 'Institute',
+    Faculty: 'Faculty',
+    'مدرسة': 'School',
+    'معهد': 'Institute',
+    'كلية': 'Faculty',
+    'كلية عليا': 'Upper College',
+    'كلية متوسطة': 'Middle College',
+
+    // Batch names
+    'Batch 1': 'Batch 1',
+    'Batch 2': 'Batch 2',
+    'Batch 3': 'Batch 3',
+    'Batch 4': 'Batch 4',
+    '1': 'Batch 1',
+    '2': 'Batch 2',
+    '3': 'Batch 3',
+    '4': 'Batch 4',
+    'دفعة 1': 'Batch 1',
+    'دفعة 2': 'Batch 2',
+    'دفعة 3': 'Batch 3',
+    'دفعة 4': 'Batch 4',
+
+    // Factory types
+    Internal: 'Internal',
+    External: 'External',
+    'داخلي': 'Internal',
+    'خارجي': 'External',
+
+    // Comparison
+    vs: 'vs',
 
     // Month names
     january: 'January',
@@ -148,9 +179,75 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     date_new: 'Newest First',
     date_old: 'Oldest First',
 
-    // Student Distribution Component - New Keys Only
+    // Student Distribution Component
     no_students_assigned: 'No students assigned',
     save_changes: 'Save Changes',
+
+    // Analytics Component
+    monthly_trends: 'Monthly Trends',
+    capacity_utilization: 'Capacity Utilization',
+    student_distribution: 'Student Distribution',
+    department_breakdown: 'Department Breakdown',
+    supervisor_workload: 'Supervisor Workload',
+    factory_performance: 'Factory Performance',
+    student_growth: 'Student Growth',
+    capacity_vs_assigned: 'Capacity vs Assigned Students',
+
+    // Login Component
+    login: 'Login',
+    username: 'Username',
+    password: 'Password',
+    remember_me: 'Remember Me',
+    forgot_password: 'Forgot Password?',
+    sign_in: 'Sign In',
+    invalid_credentials: 'Invalid username or password',
+    enter_email: 'Enter your email',
+    enter_password: 'Enter your password',
+    email_required: 'Email is required',
+    invalid_email: 'Please enter a valid email',
+    password_required: 'Password is required',
+    password_min_length: 'Password must be at least 6 characters',
+    logging_in: 'Logging in...',
+    no_account: 'Don\'t have an account?',
+
+    // Sign Up Component
+    sign_up: 'Sign Up',
+    confirm_password: 'Confirm Password',
+    create_account: 'Create Account',
+    already_have_account: 'Already have an account?',
+    passwords_dont_match: 'Passwords do not match',
+    email_in_use: 'Email is already in use',
+    weak_password: 'Password is too weak',
+    first_name: 'First Name',
+    last_name: 'Last Name',
+    enter_first_name: 'Enter your first name',
+    enter_last_name: 'Enter your last name',
+    enter_confirm_password: 'Confirm your password',
+    select_role: 'Select Role',
+    administrative_supervisor: 'Administrative Supervisor',
+    technical_supervisor: 'Technical Supervisor',
+    signing_up: 'Signing up...',
+
+    // Settings Component
+    account_settings: 'Account Settings',
+    change_password: 'Change Password',
+    current_password: 'Current Password',
+    new_password: 'New Password',
+    update_profile: 'Update Profile',
+    notification_settings: 'Notification Settings',
+    language_settings: 'Language Settings',
+    theme_settings: 'Theme Settings',
+    save_settings: 'Save Settings',
+    reset_settings: 'Reset Settings',
+
+    // Supervisor Distribution Component
+    add_supervisor: 'Add Supervisor',
+    add_new_supervisor: 'Add New Supervisor',
+    supervisor_name: 'Supervisor Name',
+    enter_supervisor_name: 'Enter supervisor name',
+    search_supervisors: 'Search supervisors...',
+    supervisor_details: 'Supervisor Details',
+    supervisor_is_full: 'Supervisor is full'
   },
   ar: {
     // Navigation
@@ -188,6 +285,11 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     sort: 'ترتيب',
     sort_by: 'ترتيب حسب',
     all: 'الكل',
+    all_departments: 'جميع الأقسام',
+    all_stages: 'جميع المراحل',
+    all_batches: 'جميع الدفعات',
+    all_factories: 'جميع المصانع',
+    all_supervisors: 'جميع المشرفين',
 
     // Actions
     export: 'تصدير',
@@ -260,21 +362,49 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     required_field: 'هذا الحقل مطلوب',
     invalid_phone: 'صيغة رقم الهاتف غير صحيحة',
     invalid_capacity: 'يجب أن تكون السعة رقمًا موجبًا',
-    //departments
-    electrical: 'كهرباء',
-    mechanics: 'ميكانيكا',
-    information_technology: 'تكنولوجيا المعلومات',
 
-    // Batch names
-    batch_1: 'دفعة 1',
-    batch_2: 'دفعة 2',
-    batch_3: 'دفعة 3',
-    batch_4: 'دفعة 4',
+    // Department names
+    Electrical: 'كهرباء',
+    Mechanics: 'ميكانيكا',
+    'Information Technology': 'تكنولوجيا المعلومات',
+    'Electrical Technology': 'تكنولوجيا كهربائية',
+    'كهرباء': 'كهرباء',
+    'ميكانيكا': 'ميكانيكا',
+    'تكنولوجيا المعلومات': 'تكنولوجيا المعلومات',
+    'تكنولوجيا كهربائية': 'تكنولوجيا كهربائية',
 
     // Stage names
-    school: 'مدرسة',
-    institute: 'معهد',
-    faculty: 'كلية',
+    School: 'مدرسة',
+    Institute: 'معهد',
+    Faculty: 'كلية',
+    'مدرسة': 'مدرسة',
+    'معهد': 'معهد',
+    'كلية': 'كلية',
+    'كلية عليا': 'كلية عليا',
+    'كلية متوسطة': 'كلية متوسطة',
+
+    // Batch names
+    'Batch 1': 'دفعة 1',
+    'Batch 2': 'دفعة 2',
+    'Batch 3': 'دفعة 3',
+    'Batch 4': 'دفعة 4',
+    '1': 'دفعة 1',
+    '2': 'دفعة 2',
+    '3': 'دفعة 3',
+    '4': 'دفعة 4',
+    'دفعة 1': 'دفعة 1',
+    'دفعة 2': 'دفعة 2',
+    'دفعة 3': 'دفعة 3',
+    'دفعة 4': 'دفعة 4',
+
+    // Factory types
+    Internal: 'داخلي',
+    External: 'خارجي',
+    'داخلي': 'داخلي',
+    'خارجي': 'خارجي',
+
+    // Comparison
+    vs: 'مقابل',
 
     // Month names
     january: 'يناير',
@@ -296,9 +426,75 @@ const translations: Record<'en' | 'ar', Record<string, string>> = {
     date_new: 'الأحدث أولاً',
     date_old: 'الأقدم أولاً',
 
-    // Student Distribution Component - New Keys Only
+    // Student Distribution Component
     no_students_assigned: 'لا يوجد طلاب معينين',
     save_changes: 'حفظ التغييرات',
+
+    // Analytics Component
+    monthly_trends: 'الاتجاهات الشهرية',
+    capacity_utilization: 'استخدام السعة',
+    student_distribution: 'توزيع الطلاب',
+    department_breakdown: 'تفصيل الأقسام',
+    supervisor_workload: 'عبء العمل على المشرفين',
+    factory_performance: 'أداء المصانع',
+    student_growth: 'نمو الطلاب',
+    capacity_vs_assigned: 'السعة مقابل الطلاب المعينين',
+
+    // Login Component
+    login: 'تسجيل الدخول',
+    username: 'اسم المستخدم',
+    password: 'كلمة المرور',
+    remember_me: 'تذكرني',
+    forgot_password: 'نسيت كلمة المرور؟',
+    sign_in: 'تسجيل الدخول',
+    invalid_credentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+    enter_email: 'أدخل بريدك الإلكتروني',
+    enter_password: 'أدخل كلمة المرور',
+    email_required: 'البريد الإلكتروني مطلوب',
+    invalid_email: 'الرجاء إدخال بريد إلكتروني صحيح',
+    password_required: 'كلمة المرور مطلوبة',
+    password_min_length: 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+    logging_in: 'جاري تسجيل الدخول...',
+    no_account: 'ليس لديك حساب؟',
+
+    // Sign Up Component
+    sign_up: 'إنشاء حساب',
+    confirm_password: 'تأكيد كلمة المرور',
+    create_account: 'إنشاء حساب',
+    already_have_account: 'لديك حساب بالفعل؟',
+    passwords_dont_match: 'كلمات المرور غير متطابقة',
+    email_in_use: 'البريد الإلكتروني مستخدم بالفعل',
+    weak_password: 'كلمة المرور ضعيفة جداً',
+    first_name: 'الاسم الأول',
+    last_name: 'الاسم الأخير',
+    enter_first_name: 'أدخل اسمك الأول',
+    enter_last_name: 'أدخل اسمك الأخير',
+    enter_confirm_password: 'تأكيد كلمة المرور',
+    select_role: 'اختر الدور',
+    administrative_supervisor: 'مشرف إداري',
+    technical_supervisor: 'مشرف تقني',
+    signing_up: 'جاري إنشاء الحساب...',
+
+    // Settings Component
+    account_settings: 'إعدادات الحساب',
+    change_password: 'تغيير كلمة المرور',
+    current_password: 'كلمة المرور الحالية',
+    new_password: 'كلمة المرور الجديدة',
+    update_profile: 'تحديث الملف الشخصي',
+    notification_settings: 'إعدادات الإشعارات',
+    language_settings: 'إعدادات اللغة',
+    theme_settings: 'إعدادات المظهر',
+    save_settings: 'حفظ الإعدادات',
+    reset_settings: 'إعادة تعيين الإعدادات',
+
+    // Supervisor Distribution Component
+    add_supervisor: 'إضافة مشرف',
+    add_new_supervisor: 'إضافة مشرف جديد',
+    supervisor_name: 'اسم المشرف',
+    enter_supervisor_name: 'أدخل اسم المشرف',
+    search_supervisors: 'البحث عن المشرفين...',
+    supervisor_details: 'تفاصيل المشرف',
+    supervisor_is_full: 'المشرف ممتلئ'
   }
 } as const;
 
